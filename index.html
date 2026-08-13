@@ -1,211 +1,3245 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control de Cierre de Turno</title>
-    <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; }
-        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
-        .container { max-width: 600px; margin: 0 auto; }
-        .card { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        h2 { margin-top: 0; color: var(--primary); font-size: 1.25rem; }
-        .form-group { margin-bottom: 12px; }
-        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        button:hover { background: #1d4ed8; }
-        .result { padding: 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-top: 10px; }
-        .ok { background: #dcfce7; color: #15803d; }
-        .faltante { background: #fee2e2; color: #b91c1c; }
-        .sobrante { background: #fef9c3; color: #a16207; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 10px; }
-        th, td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; }
-        th { background: #f1f5f9; }
-        .hidden { display: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIERRE</title>
+
+<style>
+:root{
+    --morado:#7c3aed;
+    --morado2:#5b21b6;
+    --claro:#ede9fe;
+    --fondo:#f5f3ff;
+    --blanco:#fff;
+    --texto:#1f2937;
+    --borde:#ddd6fe;
+    --verde:#16a34a;
+    --rojo:#dc2626;
+    --amarillo:#ca8a04;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    padding:15px;
+    background:var(--fondo);
+    color:var(--texto);
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+.container{
+    max-width:1250px;
+    margin:auto;
+}
+
+/* LOGIN */
+
+#loginScreen{
+    min-height:95vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.login-card{
+    width:100%;
+    max-width:400px;
+    background:white;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 8px 30px rgba(0,0,0,.15);
+}
+
+.login-logo{
+    width:70px;
+    height:70px;
+    background:var(--morado);
+    color:white;
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+    font-weight:bold;
+    margin:0 auto 15px;
+}
+
+.login-card h1{
+    text-align:center;
+    color:var(--morado);
+    margin:0 0 25px;
+}
+
+.login-error{
+    display:none;
+    background:#fee2e2;
+    color:#b91c1c;
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:12px;
+    text-align:center;
+    font-weight:bold;
+}
+
+/* ENCABEZADO */
+
+.header{
+    background:linear-gradient(135deg,#7c3aed,#9333ea);
+    color:white;
+    padding:20px;
+    border-radius:16px 16px 0 0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.header h1{
+    margin:0;
+    font-size:30px;
+}
+
+.header p{
+    margin:5px 0 0;
+    opacity:.9;
+}
+
+.header button{
+    background:rgba(255,255,255,.18);
+    border:1px solid rgba(255,255,255,.4);
+}
+
+/* TABS */
+
+.tabs{
+    display:flex;
+    background:white;
+    border-radius:0 0 14px 14px;
+    margin-bottom:15px;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+    overflow:hidden;
+}
+
+.tab{
+    flex:1;
+    padding:15px 10px;
+    border:0;
+    border-radius:0;
+    background:white;
+    color:#64748b;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.tab:hover{
+    background:var(--claro);
+}
+
+.tab.active{
+    background:var(--morado);
+    color:white;
+}
+
+/* SECCIONES */
+
+.section{
+    display:none;
+}
+
+.section.active{
+    display:block;
+}
+
+.card{
+    background:var(--blanco);
+    border-radius:14px;
+    padding:18px;
+    margin-bottom:15px;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+h2{
+    color:var(--morado);
+    margin-top:0;
+}
+
+h3{
+    color:var(--morado2);
+}
+
+/* FORMULARIOS */
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.form-group{
+    margin-bottom:10px;
+}
+
+label{
+    display:block;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:5px;
+}
+
+input,
+select{
+    width:100%;
+    padding:11px;
+    border:1px solid var(--borde);
+    border-radius:8px;
+    font-size:16px;
+    outline:none;
+}
+
+input:focus,
+select:focus{
+    border-color:var(--morado);
+    box-shadow:0 0 0 2px var(--claro);
+}
+
+.venta{
+    background:#faf9ff;
+}
+
+.fichas{
+    background:#fff7ed;
+    border-color:#fdba74;
+}
+
+/* BOTONES */
+
+button{
+    border:0;
+    border-radius:8px;
+    padding:11px 16px;
+    background:var(--morado);
+    color:white;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:var(--morado2);
+}
+
+.btn-danger{
+    background:#dc2626;
+}
+
+.btn-secondary{
+    background:#64748b;
+}
+
+.btn-green{
+    background:#16a34a;
+}
+
+.btn-full{
+    width:100%;
+}
+
+/* INFO */
+
+.info{
+    background:#fff7ed;
+    border:1px solid #fdba74;
+    padding:10px;
+    border-radius:8px;
+    font-size:13px;
+    color:#9a3412;
+}
+
+.fee-info{
+    background:#fef3c7;
+    border:1px solid #f59e0b;
+    padding:10px;
+    border-radius:8px;
+    font-size:13px;
+    color:#92400e;
+}
+
+/* RESULTADOS */
+
+.resultados{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+.resultado{
+    padding:14px;
+    border-radius:10px;
+    background:#faf9ff;
+    border:1px solid var(--borde);
+}
+
+.resultado small{
+    display:block;
+    color:#64748b;
+    margin-bottom:5px;
+}
+
+.resultado strong{
+    font-size:18px;
+}
+
+.destacado{
+    background:var(--claro);
+    border:2px solid var(--morado);
+}
+
+/* ESTADO */
+
+.estado{
+    margin-top:15px;
+    padding:16px;
+    border-radius:10px;
+    text-align:center;
+    font-size:19px;
+    font-weight:bold;
+}
+
+.cuadrado{
+    background:#dcfce7;
+    color:var(--verde);
+}
+
+.faltante{
+    background:#fee2e2;
+    color:var(--rojo);
+}
+
+.sobrante{
+    background:#fef9c3;
+    color:var(--amarillo);
+}
+
+/* TABLAS */
+
+.table-container{
+    width:100%;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+    min-width:1100px;
+}
+
+th,
+td{
+    border:1px solid #e2e8f0;
+    padding:8px;
+    text-align:center;
+    white-space:nowrap;
+}
+
+th{
+    background:var(--morado);
+    color:white;
+}
+
+tr:nth-child(even){
+    background:#faf9ff;
+}
+
+/* SEMANA */
+
+.semana-box{
+    background:var(--claro);
+    border:1px solid var(--borde);
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:15px;
+    font-size:18px;
+}
+
+.semana-box strong{
+    color:var(--morado2);
+}
+
+.cajero-card{
+    border:1px solid var(--borde);
+    border-radius:10px;
+    margin-bottom:12px;
+    overflow:hidden;
+}
+
+.cajero-titulo{
+    background:var(--claro);
+    color:var(--morado2);
+    padding:12px;
+    font-weight:bold;
+}
+
+.cajero-datos{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    padding:12px;
+}
+
+.mini-dato{
+    background:#faf9ff;
+    border:1px solid #e5e7eb;
+    border-radius:8px;
+    padding:10px;
+}
+
+.mini-dato span{
+    display:block;
+    color:#64748b;
+    font-size:12px;
+}
+
+.mini-dato strong{
+    font-size:15px;
+}
+
+/* GRAFICOS */
+
+.grafico{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.barra-linea{
+    display:grid;
+    grid-template-columns:100px 1fr 100px;
+    align-items:center;
+    gap:10px;
+}
+
+.barra-fondo{
+    height:28px;
+    background:#ede9fe;
+    border-radius:7px;
+    overflow:hidden;
+}
+
+.barra{
+    height:100%;
+    background:linear-gradient(90deg,#7c3aed,#a855f7);
+    border-radius:7px;
+}
+
+.barra-label{
+    font-size:13px;
+    font-weight:bold;
+}
+
+.barra-valor{
+    text-align:right;
+    font-weight:bold;
+}
+
+/* ADMIN */
+
+.admin-buttons{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.admin-box{
+    border:1px solid var(--borde);
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:15px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:800px){
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .resultados{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .cajero-datos{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .barra-linea{
+        grid-template-columns:75px 1fr 80px;
+    }
+
+}
+
+@media(max-width:500px){
+
+    body{
+        padding:8px;
+    }
+
+    .header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .tabs{
+        flex-direction:column;
+    }
+
+    .resultados{
+        grid-template-columns:1fr;
+    }
+
+    .cajero-datos{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <!-- FORMULARIO DE REGISTRO -->
-    <div class="card">
-        <h2>Cierre de Turno</h2>
-        <form id="cierreForm">
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>Fecha</label>
-                    <input type="date" id="fecha" required>
-                </div>
-                <div class="form-group">
-                    <label>Turno</label>
-                    <select id="turno" onchange="toggleFee10AM()">
-                        <option value="07:00–15:00">07:00–15:00</option>
-                        <option value="15:00–23:00">15:00–23:00</option>
-                        <option value="23:00–07:00">23:00–07:00</option>
-                    </select>
-                </div>
-            </div>
 
-            <label>Ventas del Turno</label>
-            <div class="grid-2">
-                <input type="number" step="0.01" id="v1" placeholder="Venta 1" value="0">
-                <input type="number" step="0.01" id="v2" placeholder="Venta 2" value="0">
-                <input type="number" step="0.01" id="v3" placeholder="Venta 3" value="0">
-                <input type="number" step="0.01" id="v4" placeholder="Venta 4" value="0">
-            </div>
+<!-- =====================================================
+     LOGIN
+===================================================== -->
 
-            <div class="grid-2" style="margin-top: 10px;">
-                <div class="form-group">
-                    <label>Saldo Inicial App</label>
-                    <input type="number" step="0.01" id="saldoInicial" value="0">
-                </div>
-                <div class="form-group" id="groupFee10">
-                    <label>Fee de las 10:00</label>
-                    <input type="number" step="0.01" id="fee10" value="0">
-                </div>
-            </div>
+<div id="loginScreen">
 
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>Gastos (-)</label>
-                    <input type="number" step="0.01" id="gastos" value="0">
-                </div>
-                <div class="form-group">
-                    <label>Retiros (-)</label>
-                    <input type="number" step="0.01" id="retiros" value="0">
-                </div>
-            </div>
+    <div class="login-card">
 
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>Préstamos/Respaldo (±)</label>
-                    <input type="number" step="0.01" id="prestamos" value="0">
-                </div>
-                <div class="form-group">
-                    <label>Saldo REAL en Billetera</label>
-                    <input type="number" step="0.01" id="saldoReal" required placeholder="Monto en App">
-                </div>
-            </div>
-
-            <button type="submit">Guardar y Procesar Cierre</button>
-        </form>
-    </div>
-
-    <!-- HISTORIAL DE CIERRES -->
-    <div class="card">
-        <h2>Historial de Cierres Guardados</h2>
-        <button onclick="borrarTodo()" style="background:#ef4444; margin-bottom:10px; padding:6px; font-size:0.8rem;">Borrar Historial</button>
-        <div style="overflow-x:auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Fecha/Turno</th>
-                        <th>Bruto</th>
-                        <th>Com. 0.6%</th>
-                        <th>Teórico</th>
-                        <th>Real</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody id="tablaHistorial"></tbody>
-            </table>
+        <div class="login-logo">
+            C
         </div>
+
+        <h1>CIERRE</h1>
+
+        <div
+            id="loginError"
+            class="login-error"
+        >
+            Usuario o contraseña incorrectos
+        </div>
+
+        <div class="form-group">
+
+            <label>Usuario</label>
+
+            <input
+                type="text"
+                id="loginUsuario"
+                autocomplete="username"
+                placeholder="Usuario"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Contraseña</label>
+
+            <input
+                type="password"
+                id="loginPassword"
+                autocomplete="current-password"
+                placeholder="Contraseña"
+                onkeydown="if(event.key==='Enter') iniciarSesion()"
+            >
+
+        </div>
+
+        <button
+            class="btn-full"
+            onclick="iniciarSesion()"
+        >
+            INGRESAR
+        </button>
+
     </div>
+
 </div>
 
-<script>
-    document.getElementById('fecha').valueAsDate = new Date();
 
-    function toggleFee10AM() {
-        const turno = document.getElementById('turno').value;
-        const groupFee = document.getElementById('groupFee10');
-        if (turno === "07:00–15:00") {
-            groupFee.classList.remove('hidden');
-        } else {
-            groupFee.classList.add('hidden');
-            document.getElementById('fee10').value = 0;
-        }
+<!-- =====================================================
+     APLICACION
+===================================================== -->
+
+<div
+    id="app"
+    style="display:none;"
+>
+
+<div class="container">
+
+
+<!-- HEADER -->
+
+<div class="header">
+
+    <div>
+
+        <h1>CIERRE</h1>
+
+        <p>
+            Control de cierres y movimientos
+        </p>
+
+    </div>
+
+    <button onclick="cerrarSesion()">
+        CERRAR SESIÓN
+    </button>
+
+</div>
+
+
+<!-- TABS -->
+
+<div class="tabs">
+
+    <button
+        class="tab active"
+        onclick="mostrarPestana('cierre',this)"
+    >
+        CIERRE
+    </button>
+
+    <button
+        class="tab"
+        onclick="mostrarPestana('historial',this)"
+    >
+        HISTORIAL
+    </button>
+
+    <button
+        class="tab"
+        onclick="mostrarPestana('semana',this)"
+    >
+        SEMANA
+    </button>
+
+    <button
+        class="tab"
+        onclick="mostrarPestana('admin',this)"
+    >
+        ADMIN
+    </button>
+
+</div>
+
+
+<!-- =====================================================
+     CIERRE
+===================================================== -->
+
+<div
+    id="cierre"
+    class="section active"
+>
+
+<div class="card">
+
+<h2>Datos del cierre</h2>
+
+<div class="grid">
+
+<div class="form-group">
+
+<label>Fecha</label>
+
+<input
+    type="date"
+    id="fecha"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>Cajero</label>
+
+<input
+    type="text"
+    id="cajero"
+    placeholder="Nombre del cajero"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>Turno</label>
+
+<select
+    id="turno"
+    onchange="mostrarFee()"
+>
+
+<option value="07:00–15:00">
+07:00–15:00
+</option>
+
+<option value="15:00–23:00">
+15:00–23:00
+</option>
+
+<option value="23:00–07:00">
+23:00–07:00
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Saldo inicial billetera
+</label>
+
+<input
+    type="number"
+    id="saldoInicial"
+    value="0"
+    step="0.01"
+    oninput="calcular()"
+>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- VENTAS -->
+
+<div class="card">
+
+<h2>Ventas del turno</h2>
+
+<div class="grid">
+
+<div class="form-group">
+
+<label>Venta 1</label>
+
+<input
+    class="venta"
+    type="number"
+    id="v1"
+    value="0"
+    step="0.01"
+    oninput="calcular()"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>Venta 2</label>
+
+<input
+    class="venta"
+    type="number"
+    id="v2"
+    value="0"
+    step="0.01"
+    oninput="calcular()"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>Venta 3</label>
+
+<input
+    class="venta"
+    type="number"
+    id="v3"
+    value="0"
+    step="0.01"
+    oninput="calcular()"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>Venta 4</label>
+
+<input
+    class="venta"
+    type="number"
+    id="v4"
+    value="0"
+    step="0.01"
+    oninput="calcular()"
+>
+
+</div>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Fichas regaladas
+</label>
+
+<input
+    class="fichas"
+    type="number"
+    id="fichas"
+    value="0"
+    step="0.01"
+    oninput="calcular()"
+>
+
+<div class="info">
+
+Las fichas regaladas se descuentan
+de las ventas porque no generan ingreso.
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- MOVIMIENTOS -->
+
+<div class="card">
+
+<h2>Movimientos de billetera</h2>
+
+<div class="grid">
+
+<div class="form-group">
+
+<label>
+Fee 07:00–15:00
+</label>
+
+<input
+    type="number"
+    id="fee"
+    value="0"
+    step="0.01"
+    oninput="calcular()"
+>
+
+<div class="fee-info">
+
+El Fee se carga manualmente y se descuenta
+del cierre final del turno 07:00–15:00.
+
+</div>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Gastos (-)
+</label>
+
+<input
+    type="number"
+    id="gastos"
+    value="0"
+    step="0.01"
+    oninput="calcular()"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Retiros (-)
+</label>
+
+<input
+    type="number"
+    id="retiros"
+    value="0"
+    step="0.01"
+    oninput="calcular()"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Respaldo (-)
+</label>
+
+<input
+    type="number"
+    id="respaldo"
+    value="0"
+    step="0.01"
+    oninput="calcular()"
+>
+
+</div>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Saldo REAL de la billetera
+</label>
+
+<input
+    type="number"
+    id="saldoReal"
+    value="0"
+    step="0.01"
+    oninput="calcular()"
+>
+
+</div>
+
+</div>
+
+
+<!-- RESULTADO -->
+
+<div class="card">
+
+<h2>Resultado del cierre</h2>
+
+<div class="resultados">
+
+<div class="resultado">
+
+<small>Total ventas</small>
+
+<strong id="totalVentas">
+$0,00
+</strong>
+
+</div>
+
+
+<div class="resultado">
+
+<small>Fichas regaladas</small>
+
+<strong id="mostrarFichas">
+$0,00
+</strong>
+
+</div>
+
+
+<div class="resultado destacado">
+
+<small>
+Ingresos después de fichas
+</small>
+
+<strong id="ingresos">
+$0,00
+</strong>
+
+</div>
+
+
+<div class="resultado">
+
+<small>Comisión 0,6%</small>
+
+<strong id="comision">
+$0,00
+</strong>
+
+</div>
+
+
+<div class="resultado">
+
+<small>Fee</small>
+
+<strong id="mostrarFeeResultado">
+$0,00
+</strong>
+
+</div>
+
+
+<div class="resultado">
+
+<small>Saldo inicial</small>
+
+<strong id="mostrarInicial">
+$0,00
+</strong>
+
+</div>
+
+
+<div class="resultado">
+
+<small>Gastos</small>
+
+<strong id="mostrarGastos">
+$0,00
+</strong>
+
+</div>
+
+
+<div class="resultado">
+
+<small>Retiros</small>
+
+<strong id="mostrarRetiros">
+$0,00
+</strong>
+
+</div>
+
+
+<div class="resultado">
+
+<small>Respaldo</small>
+
+<strong id="mostrarRespaldo">
+$0,00
+</strong>
+
+</div>
+
+
+<div class="resultado destacado">
+
+<small>
+SALDO TEÓRICO
+</small>
+
+<strong id="saldoTeorico">
+$0,00
+</strong>
+
+</div>
+
+
+<div class="resultado">
+
+<small>
+Saldo REAL
+</small>
+
+<strong id="mostrarReal">
+$0,00
+</strong>
+
+</div>
+
+</div>
+
+
+<div
+id="estado"
+class="estado cuadrado"
+>
+CUADRADO — Diferencia: $0,00
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="grid">
+
+<button onclick="guardarCierre()">
+GUARDAR CIERRE
+</button>
+
+<button
+class="btn-secondary"
+onclick="nuevoCierre()"
+>
+NUEVO CIERRE
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     HISTORIAL
+===================================================== -->
+
+<div
+id="historial"
+class="section"
+>
+
+<div class="card">
+
+<h2>Historial de cierres</h2>
+
+<div
+style="
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:15px;
+"
+>
+
+<button onclick="actualizarHistorial()">
+ACTUALIZAR
+</button>
+
+<button
+class="btn-danger"
+onclick="borrarHistorial()"
+>
+BORRAR HISTORIAL
+</button>
+
+</div>
+
+
+<div class="table-container">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Fecha</th>
+<th>Cajero</th>
+<th>Turno</th>
+<th>Venta 1</th>
+<th>Venta 2</th>
+<th>Venta 3</th>
+<th>Venta 4</th>
+<th>Ventas</th>
+<th>Fichas</th>
+<th>Ingresos</th>
+<th>0,6%</th>
+<th>Fee</th>
+<th>Gastos</th>
+<th>Retiros</th>
+<th>Respaldo</th>
+<th>Inicial</th>
+<th>Teórico</th>
+<th>Real</th>
+<th>Diferencia</th>
+<th>Estado</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tablaHistorial"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     SEMANA
+===================================================== -->
+
+<div
+id="semana"
+class="section"
+>
+
+<div class="card">
+
+<h2>Resumen semanal</h2>
+
+<div class="form-group">
+
+<label>
+Elegir una fecha de la semana
+</label>
+
+<input
+type="date"
+id="fechaSemana"
+onchange="actualizarSemana()"
+>
+
+</div>
+
+
+<div class="semana-box">
+
+Semana:
+
+<strong id="rangoSemana">
+-
+</strong>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>Totales de la semana</h2>
+
+<div class="resultados">
+
+<div class="resultado destacado">
+
+<small>Ventas</small>
+
+<strong id="semVentas">
+$0,00
+</strong>
+
+</div>
+
+<div class="resultado">
+
+<small>Fichas</small>
+
+<strong id="semFichas">
+$0,00
+</strong>
+
+</div>
+
+<div class="resultado">
+
+<small>Ingresos</small>
+
+<strong id="semIngresos">
+$0,00
+</strong>
+
+</div>
+
+<div class="resultado">
+
+<small>Comisión 0,6%</small>
+
+<strong id="semComision">
+$0,00
+</strong>
+
+</div>
+
+<div class="resultado">
+
+<small>Fee</small>
+
+<strong id="semFee">
+$0,00
+</strong>
+
+</div>
+
+<div class="resultado">
+
+<small>Gastos</small>
+
+<strong id="semGastos">
+$0,00
+</strong>
+
+</div>
+
+<div class="resultado">
+
+<small>Retiros</small>
+
+<strong id="semRetiros">
+$0,00
+</strong>
+
+</div>
+
+<div class="resultado">
+
+<small>Respaldo</small>
+
+<strong id="semRespaldo">
+$0,00
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>Ventas por día</h2>
+
+<div
+id="graficoDias"
+class="grafico"
+></div>
+
+</div>
+
+
+<div class="card">
+
+<h2>Ventas por cajero</h2>
+
+<div
+id="graficoCajeros"
+class="grafico"
+></div>
+
+</div>
+
+
+<div class="card">
+
+<h2>Resumen por cajero</h2>
+
+<div id="resumenCajeros"></div>
+
+</div>
+
+
+<div class="card">
+
+<h2>Cierres de la semana</h2>
+
+<div class="table-container">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Fecha</th>
+<th>Cajero</th>
+<th>Turno</th>
+<th>Ventas</th>
+<th>Fichas</th>
+<th>Ingresos</th>
+<th>0,6%</th>
+<th>Fee</th>
+<th>Gastos</th>
+<th>Retiros</th>
+<th>Respaldo</th>
+<th>Teórico</th>
+<th>Real</th>
+<th>Diferencia</th>
+<th>Estado</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tablaSemana"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ADMINISTRACION
+===================================================== -->
+
+<div
+id="admin"
+class="section"
+>
+
+<div class="card">
+
+<h2>Administración</h2>
+
+<div class="admin-box">
+
+<h3>Cambiar contraseña</h3>
+
+<div class="grid">
+
+<div class="form-group">
+
+<label>
+Contraseña actual
+</label>
+
+<input
+type="password"
+id="passActual"
+>
+
+</div>
+
+<div class="form-group">
+
+<label>
+Nueva contraseña
+</label>
+
+<input
+type="password"
+id="passNueva"
+>
+
+</div>
+
+</div>
+
+<button onclick="cambiarPassword()">
+CAMBIAR CONTRASEÑA
+</button>
+
+</div>
+
+
+<div class="admin-box">
+
+<h3>Respaldo de datos</h3>
+
+<p>
+Los datos se guardan solamente en este dispositivo.
+Podés exportarlos a un archivo y guardarlo en un pendrive.
+</p>
+
+<div class="admin-buttons">
+
+<button
+class="btn-green"
+onclick="exportarDatos()"
+>
+EXPORTAR RESPALDO
+</button>
+
+
+<button
+class="btn-secondary"
+onclick="document.getElementById('archivoImportar').click()"
+>
+IMPORTAR RESPALDO
+</button>
+
+<input
+type="file"
+id="archivoImportar"
+accept=".json"
+style="display:none"
+onchange="importarDatos(event)"
+>
+
+</div>
+
+</div>
+
+
+<div class="admin-box">
+
+<h3>Eliminar datos</h3>
+
+<p>
+Esta acción elimina todos los cierres guardados
+en este dispositivo.
+</p>
+
+<button
+class="btn-danger"
+onclick="borrarTodo()"
+>
+BORRAR TODOS LOS DATOS
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   CONFIGURACION LOGIN
+===================================================== */
+
+const USUARIO="admin";
+
+const CLAVE_INICIAL="1234";
+
+
+/*
+   La contraseña personalizada se guarda
+   localmente en este dispositivo.
+*/
+
+function obtenerClave(){
+
+    return localStorage.getItem(
+        "clave_cierre"
+    ) || CLAVE_INICIAL;
+
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+function iniciarSesion(){
+
+    const usuario=
+    document.getElementById(
+        "loginUsuario"
+    ).value.trim();
+
+    const clave=
+    document.getElementById(
+        "loginPassword"
+    ).value;
+
+
+    if(
+        usuario===USUARIO &&
+        clave===obtenerClave()
+    ){
+
+        sessionStorage.setItem(
+            "sesion_cierre",
+            "activa"
+        );
+
+
+        document.getElementById(
+            "loginScreen"
+        ).style.display="none";
+
+
+        document.getElementById(
+            "app"
+        ).style.display="block";
+
+
+        iniciarAplicacion();
+
+    }
+    else{
+
+        document.getElementById(
+            "loginError"
+        ).style.display="block";
+
     }
 
-    document.getElementById('cierreForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+}
 
-        const fecha = document.getElementById('fecha').value;
-        const turno = document.getElementById('turno').value;
-        const v1 = parseFloat(document.getElementById('v1').value) || 0;
-        const v2 = parseFloat(document.getElementById('v2').value) || 0;
-        const v3 = parseFloat(document.getElementById('v3').value) || 0;
-        const v4 = parseFloat(document.getElementById('v4').value) || 0;
-        
-        const saldoInicial = parseFloat(document.getElementById('saldoInicial').value) || 0;
-        const fee10 = parseFloat(document.getElementById('fee10').value) || 0;
-        const gastos = parseFloat(document.getElementById('gastos').value) || 0;
-        const retiros = parseFloat(document.getElementById('retiros').value) || 0;
-        const prestamos = parseFloat(document.getElementById('prestamos').value) || 0;
-        const saldoReal = parseFloat(document.getElementById('saldoReal').value) || 0;
 
-        // Cálculos
-        const ingresoBruto = v1 + v2 + v3 + v4;
-        const comision06 = ingresoBruto * 0.006;
-        const ingresoNeto = ingresoBruto - comision06 - fee10;
-        
-        const saldoTeorico = saldoInicial + ingresoNeto - gastos - retiros + prestamos;
-        const diferencia = saldoReal - saldoTeorico;
+function cerrarSesion(){
 
-        let estado = "CUADRADO";
-        if (diferencia < -0.01) estado = `FALTANTE ($${Math.abs(diferencia).toFixed(2)})`;
-        if (diferencia > 0.01) estado = `SOBRANTE ($${diferencia.toFixed(2)})`;
+    sessionStorage.removeItem(
+        "sesion_cierre"
+    );
 
-        const registro = {
-            fecha, turno, ingresoBruto, comision06, saldoTeorico, saldoReal, diferencia, estado
-        };
 
-        guardarEnLocalStorage(registro);
-        actualizarTabla();
-        alert(`Cierre Guardado con éxito. Estado: ${estado}`);
+    document.getElementById(
+        "app"
+    ).style.display="none";
+
+
+    document.getElementById(
+        "loginScreen"
+    ).style.display="flex";
+
+
+    document.getElementById(
+        "loginPassword"
+    ).value="";
+
+}
+
+
+/* =====================================================
+   CAMBIAR PASSWORD
+===================================================== */
+
+function cambiarPassword(){
+
+    const actual=
+    document.getElementById(
+        "passActual"
+    ).value;
+
+    const nueva=
+    document.getElementById(
+        "passNueva"
+    ).value;
+
+
+    if(actual!==obtenerClave()){
+
+        alert(
+            "La contraseña actual es incorrecta."
+        );
+
+        return;
+
+    }
+
+
+    if(nueva.length<4){
+
+        alert(
+            "La nueva contraseña debe tener al menos 4 caracteres."
+        );
+
+        return;
+
+    }
+
+
+    localStorage.setItem(
+        "clave_cierre",
+        nueva
+    );
+
+
+    document.getElementById(
+        "passActual"
+    ).value="";
+
+    document.getElementById(
+        "passNueva"
+    ).value="";
+
+
+    alert(
+        "Contraseña cambiada correctamente."
+    );
+
+}
+
+
+/* =====================================================
+   INICIO
+===================================================== */
+
+function iniciarAplicacion(){
+
+    const hoy=new Date();
+
+    document.getElementById(
+        "fecha"
+    ).valueAsDate=hoy;
+
+    document.getElementById(
+        "fechaSemana"
+    ).valueAsDate=hoy;
+
+
+    mostrarFee();
+
+    calcular();
+
+    actualizarHistorial();
+
+    actualizarSemana();
+
+}
+
+
+/* =====================================================
+   PESTAÑAS
+===================================================== */
+
+function mostrarPestana(nombre,boton){
+
+    document
+    .querySelectorAll(".section")
+    .forEach(s=>{
+        s.classList.remove("active");
     });
 
-    function guardarEnLocalStorage(registro) {
-        let historial = JSON.parse(localStorage.getItem('cierres_turno')) || [];
-        historial.unshift(registro); // Agregar al principio
-        localStorage.setItem('cierres_turno', JSON.stringify(historial));
-    }
 
-    function actualizarTabla() {
-        const historial = JSON.parse(localStorage.getItem('cierres_turno')) || [];
-        const tbody = document.getElementById('tablaHistorial');
-        tbody.innerHTML = '';
+    document
+    .querySelectorAll(".tab")
+    .forEach(t=>{
+        t.classList.remove("active");
+    });
 
-        historial.forEach(item => {
-            let claseEstado = "ok";
-            if (item.diferencia < -0.01) claseEstado = "faltante";
-            if (item.diferencia > 0.01) claseEstado = "sobrante";
 
-            tbody.innerHTML += `
-                <tr>
-                    <td><b>${item.fecha}</b><br>${item.turno}</td>
-                    <td>$${item.ingresoBruto.toFixed(2)}</td>
-                    <td>$${item.comision06.toFixed(2)}</td>
-                    <td>$${item.saldoTeorico.toFixed(2)}</td>
-                    <td>$${item.saldoReal.toFixed(2)}</td>
-                    <td class="${claseEstado}">${item.estado}</td>
-                </tr>
-            `;
-        });
-    }
+    document
+    .getElementById(nombre)
+    .classList.add("active");
 
-    function borrarTodo() {
-        if(confirm("¿Seguro que quieres borrar todo el historial?")) {
-            localStorage.removeItem('cierres_turno');
-            actualizarTabla();
+
+    boton.classList.add("active");
+
+
+    if(nombre==="historial")
+        actualizarHistorial();
+
+
+    if(nombre==="semana")
+        actualizarSemana();
+
+}
+
+
+/* =====================================================
+   DINERO
+===================================================== */
+
+function dinero(numero){
+
+    return "$"+
+    Number(numero).toLocaleString(
+        "es-AR",
+        {
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
         }
+    );
+
+}
+
+
+/* =====================================================
+   FEE
+===================================================== */
+
+function mostrarFee(){
+
+    const turno=
+    document.getElementById(
+        "turno"
+    ).value;
+
+
+    const input=
+    document.getElementById(
+        "fee"
+    );
+
+
+    if(turno!=="07:00–15:00"){
+
+        input.value=0;
+
     }
 
-    // Cargar historial al abrir
-    actualizarTabla();
-    toggleFee10AM();
+
+    calcular();
+
+}
+
+
+/* =====================================================
+   CALCULAR
+===================================================== */
+
+function calcular(){
+
+    const v1=
+    parseFloat(
+        document.getElementById("v1").value
+    )||0;
+
+    const v2=
+    parseFloat(
+        document.getElementById("v2").value
+    )||0;
+
+    const v3=
+    parseFloat(
+        document.getElementById("v3").value
+    )||0;
+
+    const v4=
+    parseFloat(
+        document.getElementById("v4").value
+    )||0;
+
+
+    const fichas=
+    parseFloat(
+        document.getElementById("fichas").value
+    )||0;
+
+
+    const saldoInicial=
+    parseFloat(
+        document.getElementById("saldoInicial").value
+    )||0;
+
+
+    const fee=
+    parseFloat(
+        document.getElementById("fee").value
+    )||0;
+
+
+    const gastos=
+    parseFloat(
+        document.getElementById("gastos").value
+    )||0;
+
+
+    const retiros=
+    parseFloat(
+        document.getElementById("retiros").value
+    )||0;
+
+
+    const respaldo=
+    parseFloat(
+        document.getElementById("respaldo").value
+    )||0;
+
+
+    const saldoReal=
+    parseFloat(
+        document.getElementById("saldoReal").value
+    )||0;
+
+
+    const totalVentas=
+    v1+v2+v3+v4;
+
+
+    const ingresos=
+    Math.max(
+        0,
+        totalVentas-fichas
+    );
+
+
+    const comision=
+    ingresos*0.006;
+
+
+    const saldoTeorico=
+    saldoInicial
+    +ingresos
+    -comision
+    -fee
+    -gastos
+    -retiros
+    -respaldo;
+
+
+    const diferencia=
+    saldoReal-saldoTeorico;
+
+
+    document.getElementById(
+        "totalVentas"
+    ).textContent=dinero(totalVentas);
+
+
+    document.getElementById(
+        "mostrarFichas"
+    ).textContent=dinero(fichas);
+
+
+    document.getElementById(
+        "ingresos"
+    ).textContent=dinero(ingresos);
+
+
+    document.getElementById(
+        "comision"
+    ).textContent=dinero(comision);
+
+
+    document.getElementById(
+        "mostrarFeeResultado"
+    ).textContent=dinero(fee);
+
+
+    document.getElementById(
+        "mostrarInicial"
+    ).textContent=dinero(saldoInicial);
+
+
+    document.getElementById(
+        "mostrarGastos"
+    ).textContent=dinero(gastos);
+
+
+    document.getElementById(
+        "mostrarRetiros"
+    ).textContent=dinero(retiros);
+
+
+    document.getElementById(
+        "mostrarRespaldo"
+    ).textContent=dinero(respaldo);
+
+
+    document.getElementById(
+        "saldoTeorico"
+    ).textContent=dinero(saldoTeorico);
+
+
+    document.getElementById(
+        "mostrarReal"
+    ).textContent=dinero(saldoReal);
+
+
+    const estado=
+    document.getElementById("estado");
+
+
+    estado.className="estado";
+
+
+    if(diferencia < -0.01){
+
+        estado.classList.add("faltante");
+
+        estado.textContent=
+        "FALTANTE — "+
+        dinero(Math.abs(diferencia));
+
+    }
+    else if(diferencia > 0.01){
+
+        estado.classList.add("sobrante");
+
+        estado.textContent=
+        "SOBRANTE — "+
+        dinero(diferencia);
+
+    }
+    else{
+
+        estado.classList.add("cuadrado");
+
+        estado.textContent=
+        "CUADRADO — Diferencia: $0,00";
+
+    }
+
+}
+
+
+/* =====================================================
+   CREAR CIERRE
+===================================================== */
+
+function obtenerCierre(){
+
+    const v1=Number(document.getElementById("v1").value)||0;
+    const v2=Number(document.getElementById("v2").value)||0;
+    const v3=Number(document.getElementById("v3").value)||0;
+    const v4=Number(document.getElementById("v4").value)||0;
+
+    const fichas=Number(document.getElementById("fichas").value)||0;
+
+    const saldoInicial=Number(document.getElementById("saldoInicial").value)||0;
+
+    const fee=Number(document.getElementById("fee").value)||0;
+
+    const gastos=Number(document.getElementById("gastos").value)||0;
+
+    const retiros=Number(document.getElementById("retiros").value)||0;
+
+    const respaldo=Number(document.getElementById("respaldo").value)||0;
+
+    const saldoReal=Number(document.getElementById("saldoReal").value)||0;
+
+
+    const totalVentas=
+    v1+v2+v3+v4;
+
+
+    const ingresos=
+    Math.max(
+        0,
+        totalVentas-fichas
+    );
+
+
+    const comision=
+    ingresos*0.006;
+
+
+    const saldoTeorico=
+    saldoInicial
+    +ingresos
+    -comision
+    -fee
+    -gastos
+    -retiros
+    -respaldo;
+
+
+    const diferencia=
+    saldoReal-saldoTeorico;
+
+
+    let estado="CUADRADO";
+
+
+    if(diferencia < -0.01)
+        estado="FALTANTE";
+
+
+    if(diferencia > 0.01)
+        estado="SOBRANTE";
+
+
+    return {
+
+        id:Date.now(),
+
+        fecha:
+        document.getElementById("fecha").value,
+
+        cajero:
+        document.getElementById("cajero").value.trim(),
+
+        turno:
+        document.getElementById("turno").value,
+
+        v1,
+        v2,
+        v3,
+        v4,
+
+        totalVentas,
+
+        fichas,
+
+        ingresos,
+
+        comision,
+
+        fee,
+
+        gastos,
+
+        retiros,
+
+        respaldo,
+
+        saldoInicial,
+
+        saldoTeorico,
+
+        saldoReal,
+
+        diferencia,
+
+        estado
+
+    };
+
+}
+
+
+/* =====================================================
+   GUARDAR CIERRE
+===================================================== */
+
+function guardarCierre(){
+
+    const fecha=
+    document.getElementById("fecha").value;
+
+    const cajero=
+    document.getElementById("cajero").value.trim();
+
+
+    if(!fecha){
+
+        alert("Seleccioná una fecha.");
+
+        return;
+
+    }
+
+
+    if(!cajero){
+
+        alert("Ingresá el nombre del cajero.");
+
+        return;
+
+    }
+
+
+    const cierre=
+    obtenerCierre();
+
+
+    let historial=
+    JSON.parse(
+        localStorage.getItem("cierres")
+    )||[];
+
+
+    historial.unshift(cierre);
+
+
+    localStorage.setItem(
+        "cierres",
+        JSON.stringify(historial)
+    );
+
+
+    actualizarHistorial();
+
+    actualizarSemana();
+
+
+    alert(
+        "Cierre guardado correctamente."
+    );
+
+}
+
+
+/* =====================================================
+   HISTORIAL
+===================================================== */
+
+function obtenerHistorial(){
+
+    return JSON.parse(
+        localStorage.getItem("cierres")
+    )||[];
+
+}
+
+
+function actualizarHistorial(){
+
+    const historial=
+    obtenerHistorial();
+
+
+    const tbody=
+    document.getElementById(
+        "tablaHistorial"
+    );
+
+
+    tbody.innerHTML="";
+
+
+    historial.forEach(item=>{
+
+        let clase="";
+
+
+        if(item.estado==="FALTANTE")
+            clase="faltante";
+
+
+        if(item.estado==="SOBRANTE")
+            clase="sobrante";
+
+
+        tbody.innerHTML+=`
+
+<tr>
+
+<td>${item.fecha}</td>
+
+<td>${escapeHTML(item.cajero)}</td>
+
+<td>${item.turno}</td>
+
+<td>${dinero(item.v1)}</td>
+
+<td>${dinero(item.v2)}</td>
+
+<td>${dinero(item.v3)}</td>
+
+<td>${dinero(item.v4)}</td>
+
+<td>${dinero(item.totalVentas)}</td>
+
+<td>${dinero(item.fichas)}</td>
+
+<td>${dinero(item.ingresos)}</td>
+
+<td>${dinero(item.comision)}</td>
+
+<td>${dinero(item.fee)}</td>
+
+<td>${dinero(item.gastos)}</td>
+
+<td>${dinero(item.retiros)}</td>
+
+<td>${dinero(item.respaldo)}</td>
+
+<td>${dinero(item.saldoInicial)}</td>
+
+<td>${dinero(item.saldoTeorico)}</td>
+
+<td>${dinero(item.saldoReal)}</td>
+
+<td>${dinero(item.diferencia)}</td>
+
+<td class="${clase}">
+${item.estado}
+</td>
+
+</tr>
+
+`;
+
+    });
+
+}
+
+
+/* =====================================================
+   BORRAR HISTORIAL
+===================================================== */
+
+function borrarHistorial(){
+
+    if(!confirm(
+        "¿Seguro que querés borrar todo el historial?"
+    ))
+        return;
+
+
+    localStorage.removeItem(
+        "cierres"
+    );
+
+
+    actualizarHistorial();
+
+    actualizarSemana();
+
+}
+
+
+/* =====================================================
+   NUEVO CIERRE
+===================================================== */
+
+function nuevoCierre(){
+
+    const campos=[
+
+        "cajero",
+        "saldoInicial",
+        "v1",
+        "v2",
+        "v3",
+        "v4",
+        "fichas",
+        "fee",
+        "gastos",
+        "retiros",
+        "respaldo",
+        "saldoReal"
+
+    ];
+
+
+    campos.forEach(id=>{
+
+        document.getElementById(id).value=
+        id==="cajero" ? "" : 0;
+
+    });
+
+
+    document.getElementById(
+        "fecha"
+    ).valueAsDate=new Date();
+
+
+    document.getElementById(
+        "turno"
+    ).value="07:00–15:00";
+
+
+    calcular();
+
+}
+
+
+/* =====================================================
+   FECHAS SEMANALES
+===================================================== */
+
+function fechaLocal(texto){
+
+    const partes=
+    texto.split("-");
+
+
+    return new Date(
+        Number(partes[0]),
+        Number(partes[1])-1,
+        Number(partes[2])
+    );
+
+}
+
+
+function formatoFecha(fecha){
+
+    const año=
+    fecha.getFullYear();
+
+
+    const mes=
+    String(
+        fecha.getMonth()+1
+    ).padStart(2,"0");
+
+
+    const dia=
+    String(
+        fecha.getDate()
+    ).padStart(2,"0");
+
+
+    return `${año}-${mes}-${dia}`;
+
+}
+
+
+function obtenerRangoSemana(texto){
+
+    const fecha=
+    fechaLocal(texto);
+
+
+    const dia=
+    fecha.getDay();
+
+
+    const diferencia=
+    dia===0 ? -6 : 1-dia;
+
+
+    const lunes=
+    new Date(fecha);
+
+
+    lunes.setDate(
+        fecha.getDate()+diferencia
+    );
+
+
+    const domingo=
+    new Date(lunes);
+
+
+    domingo.setDate(
+        lunes.getDate()+6
+    );
+
+
+    return {
+        lunes,
+        domingo
+    };
+
+}
+
+
+/* =====================================================
+   ACTUALIZAR SEMANA
+===================================================== */
+
+function actualizarSemana(){
+
+    const fechaTexto=
+    document.getElementById(
+        "fechaSemana"
+    ).value;
+
+
+    if(!fechaTexto)
+        return;
+
+
+    const rango=
+    obtenerRangoSemana(
+        fechaTexto
+    );
+
+
+    const lunes=
+    formatoFecha(
+        rango.lunes
+    );
+
+
+    const domingo=
+    formatoFecha(
+        rango.domingo
+    );
+
+
+    document.getElementById(
+        "rangoSemana"
+    ).textContent=
+    `${lunes} → ${domingo}`;
+
+
+    const historial=
+    obtenerHistorial();
+
+
+    const semana=
+    historial.filter(item=>
+        item.fecha>=lunes &&
+        item.fecha<=domingo
+    );
+
+
+    calcularTotalesSemana(
+        semana
+    );
+
+
+    generarGraficoDias(
+        semana
+    );
+
+
+    generarGraficoCajeros(
+        semana
+    );
+
+
+    generarResumenCajeros(
+        semana
+    );
+
+
+    generarTablaSemana(
+        semana
+    );
+
+}
+
+
+/* =====================================================
+   TOTALES SEMANA
+===================================================== */
+
+function calcularTotalesSemana(semana){
+
+    let ventas=0;
+    let fichas=0;
+    let ingresos=0;
+    let comision=0;
+    let fee=0;
+    let gastos=0;
+    let retiros=0;
+    let respaldo=0;
+
+
+    semana.forEach(item=>{
+
+        ventas+=item.totalVentas;
+        fichas+=item.fichas;
+        ingresos+=item.ingresos;
+        comision+=item.comision;
+        fee+=item.fee;
+        gastos+=item.gastos;
+        retiros+=item.retiros;
+        respaldo+=item.respaldo;
+
+    });
+
+
+    document.getElementById(
+        "semVentas"
+    ).textContent=dinero(ventas);
+
+
+    document.getElementById(
+        "semFichas"
+    ).textContent=dinero(fichas);
+
+
+    document.getElementById(
+        "semIngresos"
+    ).textContent=dinero(ingresos);
+
+
+    document.getElementById(
+        "semComision"
+    ).textContent=dinero(comision);
+
+
+    document.getElementById(
+        "semFee"
+    ).textContent=dinero(fee);
+
+
+    document.getElementById(
+        "semGastos"
+    ).textContent=dinero(gastos);
+
+
+    document.getElementById(
+        "semRetiros"
+    ).textContent=dinero(retiros);
+
+
+    document.getElementById(
+        "semRespaldo"
+    ).textContent=dinero(respaldo);
+
+}
+
+
+/* =====================================================
+   GRAFICO DIAS
+===================================================== */
+
+function generarGraficoDias(semana){
+
+    const contenedor=
+    document.getElementById(
+        "graficoDias"
+    );
+
+
+    const dias={
+
+        "Lunes":0,
+        "Martes":0,
+        "Miércoles":0,
+        "Jueves":0,
+        "Viernes":0,
+        "Sábado":0,
+        "Domingo":0
+
+    };
+
+
+    const nombres=[
+        "Domingo",
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado"
+    ];
+
+
+    semana.forEach(item=>{
+
+        const fecha=
+        fechaLocal(item.fecha);
+
+
+        dias[nombres[fecha.getDay()]]+=
+        item.totalVentas;
+
+    });
+
+
+    const valores=
+    Object.values(dias);
+
+
+    const max=
+    Math.max(...valores,1);
+
+
+    contenedor.innerHTML="";
+
+
+    Object.entries(dias)
+    .forEach(([nombre,valor])=>{
+
+        const porcentaje=
+        valor/max*100;
+
+
+        contenedor.innerHTML+=`
+
+<div class="barra-linea">
+
+<div class="barra-label">
+${nombre}
+</div>
+
+<div class="barra-fondo">
+
+<div
+class="barra"
+style="width:${porcentaje}%"
+></div>
+
+</div>
+
+<div class="barra-valor">
+${dinero(valor)}
+</div>
+
+</div>
+
+`;
+
+    });
+
+}
+
+
+/* =====================================================
+   GRAFICO CAJEROS
+===================================================== */
+
+function generarGraficoCajeros(semana){
+
+    const contenedor=
+    document.getElementById(
+        "graficoCajeros"
+    );
+
+
+    const cajeros={};
+
+
+    semana.forEach(item=>{
+
+        const nombre=
+        item.cajero||"Sin nombre";
+
+
+        if(!cajeros[nombre])
+            cajeros[nombre]=0;
+
+
+        cajeros[nombre]+=
+        item.totalVentas;
+
+    });
+
+
+    const valores=
+    Object.values(cajeros);
+
+
+    const max=
+    Math.max(...valores,1);
+
+
+    contenedor.innerHTML="";
+
+
+    Object.entries(cajeros)
+    .sort((a,b)=>b[1]-a[1])
+    .forEach(([nombre,valor])=>{
+
+        const porcentaje=
+        valor/max*100;
+
+
+        contenedor.innerHTML+=`
+
+<div class="barra-linea">
+
+<div
+class="barra-label"
+title="${escapeHTML(nombre)}"
+>
+${escapeHTML(nombre)}
+</div>
+
+<div class="barra-fondo">
+
+<div
+class="barra"
+style="width:${porcentaje}%"
+></div>
+
+</div>
+
+<div class="barra-valor">
+${dinero(valor)}
+</div>
+
+</div>
+
+`;
+
+    });
+
+
+    if(Object.keys(cajeros).length===0){
+
+        contenedor.innerHTML=
+        `<div class="info">
+        No hay datos de cajeros para esta semana.
+        </div>`;
+
+    }
+
+}
+
+
+/* =====================================================
+   RESUMEN CAJEROS
+===================================================== */
+
+function generarResumenCajeros(semana){
+
+    const contenedor=
+    document.getElementById(
+        "resumenCajeros"
+    );
+
+
+    const cajeros={};
+
+
+    semana.forEach(item=>{
+
+        const nombre=
+        item.cajero||"Sin nombre";
+
+
+        if(!cajeros[nombre]){
+
+            cajeros[nombre]={
+
+                cierres:0,
+                ventas:0,
+                fichas:0,
+                ingresos:0,
+                comision:0,
+                fee:0,
+                gastos:0,
+                retiros:0,
+                respaldo:0,
+                diferencia:0
+
+            };
+
+        }
+
+
+        const c=
+        cajeros[nombre];
+
+
+        c.cierres++;
+
+        c.ventas+=item.totalVentas;
+
+        c.fichas+=item.fichas;
+
+        c.ingresos+=item.ingresos;
+
+        c.comision+=item.comision;
+
+        c.fee+=item.fee;
+
+        c.gastos+=item.gastos;
+
+        c.retiros+=item.retiros;
+
+        c.respaldo+=item.respaldo;
+
+        c.diferencia+=item.diferencia;
+
+    });
+
+
+    contenedor.innerHTML="";
+
+
+    Object.entries(cajeros)
+    .sort((a,b)=>b[1].ventas-a[1].ventas)
+    .forEach(([nombre,c])=>{
+
+        contenedor.innerHTML+=`
+
+<div class="cajero-card">
+
+<div class="cajero-titulo">
+
+${escapeHTML(nombre)}
+—
+${c.cierres} cierre(s)
+
+</div>
+
+
+<div class="cajero-datos">
+
+<div class="mini-dato">
+<span>Ventas</span>
+<strong>${dinero(c.ventas)}</strong>
+</div>
+
+<div class="mini-dato">
+<span>Fichas</span>
+<strong>${dinero(c.fichas)}</strong>
+</div>
+
+<div class="mini-dato">
+<span>Ingresos</span>
+<strong>${dinero(c.ingresos)}</strong>
+</div>
+
+<div class="mini-dato">
+<span>Comisión</span>
+<strong>${dinero(c.comision)}</strong>
+</div>
+
+<div class="mini-dato">
+<span>Fee</span>
+<strong>${dinero(c.fee)}</strong>
+</div>
+
+<div class="mini-dato">
+<span>Gastos</span>
+<strong>${dinero(c.gastos)}</strong>
+</div>
+
+<div class="mini-dato">
+<span>Retiros</span>
+<strong>${dinero(c.retiros)}</strong>
+</div>
+
+<div class="mini-dato">
+<span>Respaldo</span>
+<strong>${dinero(c.respaldo)}</strong>
+</div>
+
+<div class="mini-dato">
+<span>Diferencia</span>
+<strong>${dinero(c.diferencia)}</strong>
+</div>
+
+</div>
+
+</div>
+
+`;
+
+    });
+
+
+    if(Object.keys(cajeros).length===0){
+
+        contenedor.innerHTML=
+        `<div class="info">
+        No hay cierres registrados para esta semana.
+        </div>`;
+
+    }
+
+}
+
+
+/* =====================================================
+   TABLA SEMANAL
+===================================================== */
+
+function generarTablaSemana(semana){
+
+    const tbody=
+    document.getElementById(
+        "tablaSemana"
+    );
+
+
+    tbody.innerHTML="";
+
+
+    semana.forEach(item=>{
+
+        let clase="";
+
+
+        if(item.estado==="FALTANTE")
+            clase="faltante";
+
+
+        if(item.estado==="SOBRANTE")
+            clase="sobrante";
+
+
+        tbody.innerHTML+=`
+
+<tr>
+
+<td>${item.fecha}</td>
+
+<td>${escapeHTML(item.cajero)}</td>
+
+<td>${item.turno}</td>
+
+<td>${dinero(item.totalVentas)}</td>
+
+<td>${dinero(item.fichas)}</td>
+
+<td>${dinero(item.ingresos)}</td>
+
+<td>${dinero(item.comision)}</td>
+
+<td>${dinero(item.fee)}</td>
+
+<td>${dinero(item.gastos)}</td>
+
+<td>${dinero(item.retiros)}</td>
+
+<td>${dinero(item.respaldo)}</td>
+
+<td>${dinero(item.saldoTeorico)}</td>
+
+<td>${dinero(item.saldoReal)}</td>
+
+<td>${dinero(item.diferencia)}</td>
+
+<td class="${clase}">
+${item.estado}
+</td>
+
+</tr>
+
+`;
+
+    });
+
+
+    if(semana.length===0){
+
+        tbody.innerHTML=`
+
+<tr>
+
+<td colspan="15">
+
+No hay cierres registrados
+en esta semana.
+
+</td>
+
+</tr>
+
+`;
+
+    }
+
+}
+
+
+/* =====================================================
+   EXPORTAR DATOS
+===================================================== */
+
+function exportarDatos(){
+
+    const datos={
+
+        version:1,
+
+        fechaExportacion:
+        new Date().toISOString(),
+
+        cierres:
+        obtenerHistorial(),
+
+        clave:
+        obtenerClave()
+
+    };
+
+
+    const contenido=
+    JSON.stringify(
+        datos,
+        null,
+        2
+    );
+
+
+    const blob=
+    new Blob(
+        [contenido],
+        {
+            type:"application/json"
+        }
+    );
+
+
+    const url=
+    URL.createObjectURL(blob);
+
+
+    const enlace=
+    document.createElement("a");
+
+
+    const fecha=
+    new Date()
+    .toISOString()
+    .slice(0,10);
+
+
+    enlace.href=url;
+
+    enlace.download=
+    `respaldo-cierre-${fecha}.json`;
+
+
+    enlace.click();
+
+
+    URL.revokeObjectURL(url);
+
+
+    alert(
+        "Respaldo creado. Guardalo en tu pendrive."
+    );
+
+}
+
+
+/* =====================================================
+   IMPORTAR DATOS
+===================================================== */
+
+function importarDatos(event){
+
+    const archivo=
+    event.target.files[0];
+
+
+    if(!archivo)
+        return;
+
+
+    const lector=
+    new FileReader();
+
+
+    lector.onload=function(e){
+
+        try{
+
+            const datos=
+            JSON.parse(
+                e.target.result
+            );
+
+
+            if(
+                !datos.cierres ||
+                !Array.isArray(datos.cierres)
+            ){
+
+                throw new Error();
+
+            }
+
+
+            if(!confirm(
+                "¿Querés reemplazar los datos actuales por el respaldo?"
+            )){
+
+                return;
+
+            }
+
+
+            localStorage.setItem(
+                "cierres",
+                JSON.stringify(
+                    datos.cierres
+                )
+            );
+
+
+            if(datos.clave){
+
+                localStorage.setItem(
+                    "clave_cierre",
+                    datos.clave
+                );
+
+            }
+
+
+            actualizarHistorial();
+
+            actualizarSemana();
+
+
+            alert(
+                "Respaldo importado correctamente."
+            );
+
+        }
+        catch(error){
+
+            alert(
+                "El archivo no es un respaldo válido."
+            );
+
+        }
+
+    };
+
+
+    lector.readAsText(
+        archivo
+    );
+
+
+    event.target.value="";
+
+}
+
+
+/* =====================================================
+   BORRAR TODO
+===================================================== */
+
+function borrarTodo(){
+
+    const confirmar=
+    prompt(
+        "Escribí BORRAR para eliminar todos los datos:"
+    );
+
+
+    if(confirmar!=="BORRAR"){
+
+        alert(
+            "Operación cancelada."
+        );
+
+        return;
+
+    }
+
+
+    localStorage.removeItem(
+        "cierres"
+    );
+
+
+    actualizarHistorial();
+
+    actualizarSemana();
+
+
+    alert(
+        "Todos los cierres fueron eliminados."
+    );
+
+}
+
+
+/* =====================================================
+   SEGURIDAD HTML
+===================================================== */
+
+function escapeHTML(text){
+
+    return String(text)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =====================================================
+   ARRANQUE
+===================================================== */
+
+if(
+    sessionStorage.getItem(
+        "sesion_cierre"
+    )==="activa"
+){
+
+    document.getElementById(
+        "loginScreen"
+    ).style.display="none";
+
+
+    document.getElementById(
+        "app"
+    ).style.display="block";
+
+
+    iniciarAplicacion();
+
+}
+
 </script>
 
 </body>

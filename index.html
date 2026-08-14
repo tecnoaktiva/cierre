@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
 <title>Control de Cierre de Turno</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+    box-sizing:border-box;
+}
 
 body{
     margin:0;
@@ -207,7 +216,8 @@ header p{
     margin-bottom:5px;
 }
 
-input,select{
+input,
+select{
     width:100%;
     padding:12px;
     border:1px solid #cbd5e1;
@@ -216,7 +226,8 @@ input,select{
     background:white;
 }
 
-input:focus,select:focus{
+input:focus,
+select:focus{
     outline:none;
     border-color:#2563eb;
 }
@@ -378,6 +389,16 @@ button{
     color:white;
 }
 
+.btn-dark-red{
+    background:#991b1b;
+    color:white;
+}
+
+.btn-black{
+    background:#172033;
+    color:white;
+}
+
 .small{
     font-size:12px;
     color:#64748b;
@@ -530,7 +551,9 @@ footer{
     }
 
 }
+
 </style>
+
 </head>
 
 <body>
@@ -560,7 +583,6 @@ placeholder="Correo">
 
 </div>
 
-
 <div class="login-field">
 
 <label>Contraseña</label>
@@ -573,7 +595,6 @@ onkeydown="if(event.key==='Enter') iniciarSesion()">
 
 </div>
 
-
 <button
 class="login-button"
 onclick="iniciarSesion()">
@@ -581,7 +602,6 @@ onclick="iniciarSesion()">
 🔓 INGRESAR
 
 </button>
-
 
 <div
 id="loginError"
@@ -633,7 +653,6 @@ onclick="mostrarPagina('cierre')">
 
 </button>
 
-
 <button
 class="tab"
 onclick="mostrarPagina('semana')">
@@ -660,9 +679,7 @@ class="page active">
 📅 Datos del turno
 </h2>
 
-
 <div class="grid">
-
 
 <div class="field">
 
@@ -745,9 +762,7 @@ corresponde a este turno.
 💰 Saldo y billetera
 </h2>
 
-
 <div class="grid">
-
 
 <div class="field">
 
@@ -822,7 +837,6 @@ VENTA 1 — V1
 
 <div class="sale-grid">
 
-
 <div class="field">
 
 <label>
@@ -872,7 +886,6 @@ VENTA 2 — V2
 </h3>
 
 <div class="sale-grid">
-
 
 <div class="field">
 
@@ -924,7 +937,6 @@ VENTA 3 — V3
 
 <div class="sale-grid">
 
-
 <div class="field">
 
 <label>
@@ -974,7 +986,6 @@ VENTA 4 — V4
 </h3>
 
 <div class="sale-grid">
-
 
 <div class="field">
 
@@ -1028,9 +1039,7 @@ Movimiento V4:
 ➖ Descuentos
 </h2>
 
-
 <div class="grid">
-
 
 <div class="field">
 
@@ -1095,9 +1104,7 @@ y corresponde solamente al turno 07:00 a 15:00.
 📋 Otros conceptos
 </h2>
 
-
 <div class="grid">
-
 
 <div class="field">
 
@@ -1156,9 +1163,7 @@ oninput="calcular()">
 📊 Resumen
 </h2>
 
-
 <div class="summary">
-
 
 <div class="summary-box">
 
@@ -1338,7 +1343,6 @@ No hay diferencia.
 
 <div class="buttons">
 
-
 <button
 class="btn-blue"
 onclick="calcular()">
@@ -1373,6 +1377,36 @@ onclick="limpiar()">
 🗑️ Limpiar
 
 </button>
+
+
+<button
+class="btn-dark-red"
+onclick="borrarUltimoCierre()">
+
+🗑️ Borrar este cierre
+
+</button>
+
+
+<button
+class="btn-black"
+onclick="borrarHistorial()">
+
+🧹 Borrar historial
+
+</button>
+
+</div>
+
+
+<div class="warning">
+
+⚠️ <b>Borrar este cierre</b> elimina el último cierre guardado.
+
+<br><br>
+
+⚠️ <b>Borrar historial</b> elimina todos los cierres guardados
+de la base de datos.
 
 </div>
 
@@ -1616,7 +1650,6 @@ Sin datos guardados para esta semana.
 
 <div class="buttons">
 
-
 <button
 class="btn-green"
 onclick="window.print()">
@@ -1665,6 +1698,13 @@ supabase.createClient(
 );
 
 
+/*
+   ID DEL ÚLTIMO CIERRE GUARDADO
+*/
+
+let ultimoCierreId = null;
+
+
 /* =====================================================
    LOGIN
 ===================================================== */
@@ -1685,7 +1725,6 @@ async function iniciarSesion(){
         document.getElementById(
             "loginError"
         );
-
 
     errorBox.style.display = "none";
 
@@ -1752,6 +1791,8 @@ async function iniciarSesion(){
 async function cerrarSesion(){
 
     await supabaseClient.auth.signOut();
+
+    ultimoCierreId = null;
 
     document.getElementById(
         "app"
@@ -2048,42 +2089,23 @@ function cambiarTurno(){
 
 function calcular(){
 
-    let v1dep =
-        numero("v1dep");
+    let v1dep = numero("v1dep");
+    let v1ret = numero("v1ret");
 
-    let v1ret =
-        numero("v1ret");
+    let v2dep = numero("v2dep");
+    let v2ret = numero("v2ret");
 
-    let v2dep =
-        numero("v2dep");
+    let v3dep = numero("v3dep");
+    let v3ret = numero("v3ret");
 
-    let v2ret =
-        numero("v2ret");
-
-    let v3dep =
-        numero("v3dep");
-
-    let v3ret =
-        numero("v3ret");
-
-    let v4dep =
-        numero("v4dep");
-
-    let v4ret =
-        numero("v4ret");
+    let v4dep = numero("v4dep");
+    let v4ret = numero("v4ret");
 
 
-    let v1 =
-        v1dep - v1ret;
-
-    let v2 =
-        v2dep - v2ret;
-
-    let v3 =
-        v3dep - v3ret;
-
-    let v4 =
-        v4dep - v4ret;
+    let v1 = v1dep - v1ret;
+    let v2 = v2dep - v2ret;
+    let v3 = v3dep - v3ret;
+    let v4 = v4dep - v4ret;
 
 
     let totalDepositos =
@@ -2123,9 +2145,7 @@ function calcular(){
     else{
 
         descuento06 =
-            parseFloat(
-                campo06
-            ) || 0;
+            parseFloat(campo06) || 0;
 
     }
 
@@ -2156,23 +2176,19 @@ function calcular(){
 
     document.getElementById(
         "v1total"
-    ).innerText =
-        dinero(v1);
+    ).innerText = dinero(v1);
 
     document.getElementById(
         "v2total"
-    ).innerText =
-        dinero(v2);
+    ).innerText = dinero(v2);
 
     document.getElementById(
         "v3total"
-    ).innerText =
-        dinero(v3);
+    ).innerText = dinero(v3);
 
     document.getElementById(
         "v4total"
-    ).innerText =
-        dinero(v4);
+    ).innerText = dinero(v4);
 
 
     let selectTurno =
@@ -2281,9 +2297,7 @@ function calcular(){
 
     if(diferencia > 0){
 
-        caja.classList.add(
-            "sobra"
-        );
+        caja.classList.add("sobra");
 
         resultado.innerText =
             "🟢 SOBRA " +
@@ -2297,13 +2311,9 @@ function calcular(){
     else if(diferencia < 0){
 
         let falta =
-            Math.abs(
-                diferencia
-            );
+            Math.abs(diferencia);
 
-        caja.classList.add(
-            "falta"
-        );
+        caja.classList.add("falta");
 
         resultado.innerText =
             "🔴 FALTA " +
@@ -2316,9 +2326,7 @@ function calcular(){
 
     else{
 
-        caja.classList.add(
-            "exacto"
-        );
+        caja.classList.add("exacto");
 
         resultado.innerText =
             "🟢 CIERRA EXACTO";
@@ -2332,7 +2340,7 @@ function calcular(){
 
 
 /* =====================================================
-   GUARDAR EN SUPABASE
+   GUARDAR
 ===================================================== */
 
 async function guardar(){
@@ -2380,29 +2388,17 @@ async function guardar(){
     }
 
 
-    let v1dep =
-        numero("v1dep");
+    let v1dep = numero("v1dep");
+    let v1ret = numero("v1ret");
 
-    let v1ret =
-        numero("v1ret");
+    let v2dep = numero("v2dep");
+    let v2ret = numero("v2ret");
 
-    let v2dep =
-        numero("v2dep");
+    let v3dep = numero("v3dep");
+    let v3ret = numero("v3ret");
 
-    let v2ret =
-        numero("v2ret");
-
-    let v3dep =
-        numero("v3dep");
-
-    let v3ret =
-        numero("v3ret");
-
-    let v4dep =
-        numero("v4dep");
-
-    let v4ret =
-        numero("v4ret");
+    let v4dep = numero("v4dep");
+    let v4ret = numero("v4ret");
 
 
     let totalDepositos =
@@ -2451,9 +2447,7 @@ async function guardar(){
     else{
 
         comision =
-            parseFloat(
-                campo06
-            ) || 0;
+            parseFloat(campo06) || 0;
 
     }
 
@@ -2487,22 +2481,19 @@ async function guardar(){
 
     if(diferencia > 0){
 
-        estado =
-            "SOBRA";
+        estado = "SOBRA";
 
     }
 
     else if(diferencia < 0){
 
-        estado =
-            "FALTA";
+        estado = "FALTA";
 
     }
 
     else{
 
-        estado =
-            "EXACTO";
+        estado = "EXACTO";
 
     }
 
@@ -2606,7 +2597,8 @@ async function guardar(){
             await supabaseClient
                 .from("cierres")
                 .insert(datos)
-                .select();
+                .select()
+                .single();
 
 
         if(error){
@@ -2623,8 +2615,17 @@ async function guardar(){
         }
 
 
+        /*
+           GUARDAMOS EL ID DEL ÚLTIMO CIERRE
+        */
+
+        ultimoCierreId =
+            data.id;
+
+
         alert(
-            "✅ Cierre guardado correctamente."
+            "✅ Cierre guardado correctamente.\n\n" +
+            "Ahora podés usar «Borrar este cierre» si lo cargaste mal."
         );
 
 
@@ -2646,7 +2647,280 @@ async function guardar(){
 
 
 /* =====================================================
-   LIMPIAR
+   BORRAR ÚLTIMO CIERRE
+===================================================== */
+
+async function borrarUltimoCierre(){
+
+    try{
+
+        const {
+            data:{
+                session
+            }
+        } =
+            await supabaseClient.auth.getSession();
+
+
+        if(!session){
+
+            alert(
+                "Tu sesión expiró. Volvé a ingresar."
+            );
+
+            cerrarSesion();
+
+            return;
+
+        }
+
+
+        /*
+           SI NO TENEMOS EL ID EN MEMORIA,
+           BUSCAMOS EL ÚLTIMO REGISTRO
+        */
+
+        let id =
+            ultimoCierreId;
+
+
+        if(!id){
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .from("cierres")
+                    .select("id,fecha,cajero,turno")
+                    .order(
+                        "id",
+                        {
+                            ascending:false
+                        }
+                    )
+                    .limit(1)
+                    .maybeSingle();
+
+
+            if(error){
+
+                console.error(error);
+
+                alert(
+                    "❌ No se pudo buscar el último cierre.\n\n" +
+                    error.message
+                );
+
+                return;
+
+            }
+
+
+            if(!data){
+
+                alert(
+                    "📭 No hay cierres guardados."
+                );
+
+                return;
+
+            }
+
+
+            id =
+                data.id;
+
+        }
+
+
+        const confirmar =
+            confirm(
+                "⚠️ ATENCIÓN\n\n" +
+                "Vas a borrar el último cierre guardado.\n\n" +
+                "Esta acción no se puede deshacer.\n\n" +
+                "¿Querés continuar?"
+            );
+
+
+        if(!confirmar){
+
+            return;
+
+        }
+
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("cierres")
+                .delete()
+                .eq("id",id);
+
+
+        if(error){
+
+            console.error(error);
+
+            alert(
+                "❌ No se pudo borrar el cierre.\n\n" +
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        ultimoCierreId = null;
+
+
+        alert(
+            "✅ El cierre fue eliminado correctamente."
+        );
+
+
+        calcularSemana();
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        alert(
+            "❌ Ocurrió un error al borrar el cierre."
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   BORRAR HISTORIAL COMPLETO
+===================================================== */
+
+async function borrarHistorial(){
+
+    try{
+
+        const {
+            data:{
+                session
+            }
+        } =
+            await supabaseClient.auth.getSession();
+
+
+        if(!session){
+
+            alert(
+                "Tu sesión expiró. Volvé a ingresar."
+            );
+
+            cerrarSesion();
+
+            return;
+
+        }
+
+
+        /*
+           PRIMERA CONFIRMACIÓN
+        */
+
+        const confirmar =
+            confirm(
+                "⚠️⚠️ ATENCIÓN ⚠️⚠️\n\n" +
+                "Vas a borrar TODO el historial de cierres.\n\n" +
+                "Se eliminarán todos los registros guardados.\n\n" +
+                "Esta acción NO se puede deshacer.\n\n" +
+                "¿Estás seguro?"
+            );
+
+
+        if(!confirmar){
+
+            return;
+
+        }
+
+
+        /*
+           SEGUNDA CONFIRMACIÓN
+        */
+
+        const confirmar2 =
+            confirm(
+                "🚨 ÚLTIMA CONFIRMACIÓN 🚨\n\n" +
+                "¿REALMENTE querés eliminar TODOS los cierres?"
+            );
+
+
+        if(!confirmar2){
+
+            return;
+
+        }
+
+
+        /*
+           BORRAMOS TODOS LOS REGISTROS
+           CUYO ID SEA MAYOR O IGUAL A 0
+        */
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("cierres")
+                .delete()
+                .gte("id",0);
+
+
+        if(error){
+
+            console.error(error);
+
+            alert(
+                "❌ No se pudo borrar el historial.\n\n" +
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        ultimoCierreId = null;
+
+
+        alert(
+            "✅ Historial eliminado correctamente."
+        );
+
+
+        calcularSemana();
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        alert(
+            "❌ Ocurrió un error al borrar el historial."
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   LIMPIAR FORMULARIO
 ===================================================== */
 
 function limpiar(){
@@ -3011,7 +3285,7 @@ async function calcularSemana(){
 
 
 /* =====================================================
-   INICIO
+   SESIÓN
 ===================================================== */
 
 supabaseClient.auth.onAuthStateChange(

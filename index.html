@@ -124,11 +124,12 @@ body{
 
 
 /* =========================
-   APP
+   MENU PRINCIPAL
 ========================= */
 
-#app{
+#menu{
     display:none;
+    min-height:100vh;
 }
 
 
@@ -142,7 +143,7 @@ header{
 
 header h1{
     margin:0;
-    font-size:23px;
+    font-size:24px;
 }
 
 
@@ -155,54 +156,94 @@ header p{
 .container{
     max-width:900px;
     margin:auto;
-    padding:20px 15px;
+    padding:25px 15px;
 }
 
 
+.paneles{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+
+.panel{
+    background:white;
+    border:0;
+    border-radius:16px;
+    padding:30px 20px;
+    min-height:170px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    cursor:pointer;
+    transition:.2s;
+}
+
+
+.panel:hover{
+    transform:translateY(-3px);
+    box-shadow:0 7px 20px rgba(0,0,0,.13);
+}
+
+
+.panel:active{
+    transform:scale(.98);
+}
+
+
+.panel .icono{
+    font-size:42px;
+    margin-bottom:12px;
+}
+
+
+.panel h3{
+    margin:0;
+    font-size:19px;
+    color:#172554;
+}
+
+
+.panel p{
+    margin:8px 0 0;
+    color:#64748b;
+    font-size:13px;
+}
+
+
+/* =========================
+   CERRAR SESIÓN
+========================= */
+
 .logout{
+    display:block;
+    margin:25px auto 0;
+    padding:12px 20px;
+    border:0;
+    border-radius:10px;
     background:#dc2626;
     color:white;
-    border:0;
-    border-radius:8px;
-    padding:10px 14px;
     font-weight:bold;
     cursor:pointer;
 }
 
 
-.topbar{
-    max-width:900px;
-    margin:auto;
-    padding:12px 15px 0;
-    display:flex;
-    justify-content:flex-end;
+.logout:hover{
+    background:#b91c1c;
 }
 
 
-.welcome{
-    background:white;
-    border-radius:14px;
-    padding:25px;
-    text-align:center;
-    box-shadow:0 3px 12px rgba(0,0,0,.08);
-}
-
-
-.welcome h2{
-    color:#172554;
-    margin-top:0;
-}
-
-
-.welcome p{
-    color:#64748b;
-}
-
+/* =========================
+   CELULAR
+========================= */
 
 @media(max-width:600px){
 
-    .login-card{
-        padding:25px 20px;
+    .paneles{
+        grid-template-columns:1fr;
+    }
+
+    .panel{
+        min-height:145px;
     }
 
 }
@@ -215,18 +256,20 @@ header p{
 <body>
 
 
-<!-- =========================
+<!-- =================================================
      LOGIN
-========================= -->
+================================================= -->
 
 <div id="loginScreen">
 
     <div class="login-card">
 
-        <h1>🔐 Control de Cierre</h1>
+        <h1>
+            🔐 CONTROL DE CIERRE
+        </h1>
 
         <p>
-            Ingresá con tu usuario para continuar
+            Ingresá para continuar
         </p>
 
 
@@ -281,11 +324,11 @@ header p{
 </div>
 
 
-<!-- =========================
-     APP
-========================= -->
+<!-- =================================================
+     MENÚ PRINCIPAL
+================================================= -->
 
-<div id="app">
+<div id="menu">
 
     <header>
 
@@ -293,43 +336,116 @@ header p{
             CONTROL DE CIERRE
         </h1>
 
-        <p>
-            Sistema de control
-        </p>
-
     </header>
 
 
-    <div class="topbar">
+    <div class="container">
+
+        <div class="paneles">
+
+
+            <!-- =================
+                 CAJA
+            ================== -->
+
+            <button
+                class="panel"
+                onclick="abrirPanel('caja.html')">
+
+                <div class="icono">
+                    💰
+                </div>
+
+                <h3>
+                    CAJA
+                </h3>
+
+                <p>
+                    Cargar y controlar las ventas
+                </p>
+
+            </button>
+
+
+            <!-- =================
+                 CIERRE
+            ================== -->
+
+            <button
+                class="panel"
+                onclick="abrirPanel('cierre.html')">
+
+                <div class="icono">
+                    🧾
+                </div>
+
+                <h3>
+                    CIERRE DE TURNO
+                </h3>
+
+                <p>
+                    Realizar el cierre del cajero
+                </p>
+
+            </button>
+
+
+            <!-- =================
+                 RESUMEN
+            ================== -->
+
+            <button
+                class="panel"
+                onclick="abrirPanel('semanal.html')">
+
+                <div class="icono">
+                    📊
+                </div>
+
+                <h3>
+                    RESUMEN DE VENTAS
+                </h3>
+
+                <p>
+                    Consultar las ventas
+                </p>
+
+            </button>
+
+
+            <!-- =================
+                 ADMIN
+            ================== -->
+
+            <button
+                class="panel"
+                onclick="abrirPanel('admin.html')">
+
+                <div class="icono">
+                    ⚙️
+                </div>
+
+                <h3>
+                    PANEL ADMINISTRATIVO
+                </h3>
+
+                <p>
+                    Administración del sistema
+                </p>
+
+            </button>
+
+
+        </div>
+
 
         <button
             class="logout"
             onclick="cerrarSesion()">
 
-            🚪 Cerrar sesión
+            🚪 CERRAR SESIÓN
 
         </button>
-
-    </div>
-
-
-    <div class="container">
-
-        <div class="welcome">
-
-            <h2>
-                ✅ Bienvenido
-            </h2>
-
-            <p>
-                El inicio de sesión funciona correctamente.
-            </p>
-
-            <p>
-                Próximo paso: <b>CAJA</b>
-            </p>
-
-        </div>
 
     </div>
 
@@ -338,9 +454,9 @@ header p{
 
 <script>
 
-/* =========================
+/* =================================================
    SUPABASE
-========================= */
+================================================= */
 
 const SUPABASE_URL =
 "https://cynrheajajovikwvapsb.supabase.co";
@@ -356,9 +472,9 @@ supabase.createClient(
 );
 
 
-/* =========================
+/* =================================================
    INICIAR SESIÓN
-========================= */
+================================================= */
 
 async function iniciarSesion(){
 
@@ -380,7 +496,8 @@ async function iniciarSesion(){
         );
 
 
-    errorBox.style.display = "none";
+    errorBox.style.display =
+        "none";
 
 
     if(!email || !password){
@@ -404,9 +521,9 @@ async function iniciarSesion(){
         } =
         await supabaseClient.auth.signInWithPassword({
 
-            email: email,
+            email:email,
 
-            password: password
+            password:password
 
         });
 
@@ -426,7 +543,7 @@ async function iniciarSesion(){
         }
 
 
-        mostrarApp();
+        mostrarMenu();
 
     }
 
@@ -445,27 +562,41 @@ async function iniciarSesion(){
 }
 
 
-/* =========================
-   MOSTRAR APP
-========================= */
+/* =================================================
+   MOSTRAR MENÚ
+================================================= */
 
-function mostrarApp(){
+function mostrarMenu(){
 
     document.getElementById(
         "loginScreen"
-    ).style.display = "none";
+    ).style.display =
+        "none";
 
 
     document.getElementById(
-        "app"
-    ).style.display = "block";
+        "menu"
+    ).style.display =
+        "block";
 
 }
 
 
-/* =========================
+/* =================================================
+   ABRIR PANEL
+================================================= */
+
+function abrirPanel(pagina){
+
+    window.location.href =
+        pagina;
+
+}
+
+
+/* =================================================
    CERRAR SESIÓN
-========================= */
+================================================= */
 
 async function cerrarSesion(){
 
@@ -474,35 +605,38 @@ async function cerrarSesion(){
 }
 
 
-/* =========================
+/* =================================================
    CONTROL DE SESIÓN
-========================= */
+================================================= */
 
 supabaseClient.auth.onAuthStateChange(
 
-    function(event, session){
+    function(event,session){
 
         if(session){
 
-            mostrarApp();
+            mostrarMenu();
 
         }
 
         else{
 
             document.getElementById(
-                "app"
-            ).style.display = "none";
+                "menu"
+            ).style.display =
+                "none";
 
 
             document.getElementById(
                 "loginScreen"
-            ).style.display = "flex";
+            ).style.display =
+                "flex";
 
 
             document.getElementById(
                 "loginPassword"
-            ).value = "";
+            ).value =
+                "";
 
         }
 
@@ -511,9 +645,9 @@ supabaseClient.auth.onAuthStateChange(
 );
 
 
-/* =========================
+/* =================================================
    COMPROBAR SESIÓN
-========================= */
+================================================= */
 
 async function comprobarSesion(){
 
@@ -528,7 +662,7 @@ async function comprobarSesion(){
         data.session
     ){
 
-        mostrarApp();
+        mostrarMenu();
 
     }
 
@@ -536,12 +670,14 @@ async function comprobarSesion(){
 
         document.getElementById(
             "loginScreen"
-        ).style.display = "flex";
+        ).style.display =
+            "flex";
 
 
         document.getElementById(
-            "app"
-        ).style.display = "none";
+            "menu"
+        ).style.display =
+            "none";
 
     }
 

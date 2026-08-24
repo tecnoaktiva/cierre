@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cierre de Turno</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#eef2f7;
+    color:#172033;
+}
+
+header{
+    background:#172554;
+    color:white;
+    padding:20px 15px;
+    text-align:center;
+}
+
+header h1{
+    margin:0;
+    font-size:24px;
+}
+
+header p{
+    margin:7px 0 0;
+    font-size:14px;
+}
+
+.topbar{
+    max-width:900px;
+    margin:auto;
+    padding:12px 15px 0;
+}
+
+.btn-volver{
+    border:0;
+    background:#475569;
+    color:white;
+    padding:10px 15px;
+    border-radius:9px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:18px 15px 30px;
+}
+
+.card{
+    background:white;
+    border-radius:15px;
+    padding:17px;
+    margin-bottom:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
+
+.card h2{
+    margin:0 0 15px;
+    color:#172554;
+    font-size:19px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.field{
+    display:flex;
+    flex-direction:column;
+}
+
+.field label{
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+input,
+select{
+    width:100%;
+    padding:12px;
+    border:1px solid #cbd5e1;
+    border-radius:9px;
+    font-size:16px;
+    background:white;
+}
+
+input:focus,
+select:focus{
+    outline:none;
+    border-color:#2563eb;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{
+    -webkit-appearance:none;
+    margin:0;
+}
+
+input[type=number]{
+    -moz-appearance:textfield;
+}
+
+
+/* =========================
+   DATOS DE CAJA
+========================= */
+
+.caja-resumen{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.caja-resumen th,
+.caja-resumen td{
+    border:1px solid #e2e8f0;
+    padding:10px 7px;
+    text-align:center;
+}
+
+.caja-resumen th{
+    background:#172554;
+    color:white;
+    font-size:13px;
+}
+
+.caja-resumen td:first-child{
+    text-align:left;
+    font-weight:bold;
+}
+
+.total-row{
+    background:#f1f5f9;
+    font-weight:bold;
+}
+
+
+/* =========================
+   INFO
+========================= */
+
+.info{
+    margin-top:14px;
+    padding:13px;
+    background:#eff6ff;
+    border-left:5px solid #2563eb;
+    border-radius:8px;
+    font-size:14px;
+    line-height:1.5;
+}
+
+.warning{
+    margin-top:14px;
+    padding:13px;
+    background:#fff7ed;
+    border-left:5px solid #f97316;
+    border-radius:8px;
+    font-size:14px;
+    line-height:1.5;
+}
+
+
+/* =========================
+   RESUMEN
+========================= */
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.summary-box{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    padding:13px;
+}
+
+.summary-box span{
+    display:block;
+    color:#64748b;
+    font-size:12px;
+    margin-bottom:5px;
+}
+
+.summary-box strong{
+    font-size:18px;
+}
+
+
+/* =========================
+   RESULTADO
+========================= */
+
+.final{
+    margin-top:18px;
+    padding:22px 15px;
+    border-radius:14px;
+    text-align:center;
+    color:white;
+}
+
+.final .titulo{
+    font-size:15px;
+    font-weight:bold;
+}
+
+.final .resultado{
+    font-size:30px;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.final .detalle{
+    margin-top:8px;
+    font-size:14px;
+}
+
+.exacto{
+    background:#2563eb;
+}
+
+.sobra{
+    background:#15803d;
+}
+
+.falta{
+    background:#dc2626;
+}
+
+
+/* =========================
+   BOTONES
+========================= */
+
+.buttons{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+button{
+    border:0;
+    border-radius:10px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.btn-blue{
+    background:#2563eb;
+    color:white;
+}
+
+.btn-green{
+    background:#16a34a;
+    color:white;
+}
+
+.btn-red{
+    background:#dc2626;
+    color:white;
+}
+
+.btn-dark{
+    background:#172033;
+    color:white;
+}
+
+.btn-gray{
+    background:#475569;
+    color:white;
+}
+
+
+/* =========================
+   MENSAJE
+========================= */
+
+.mensaje{
+    display:none;
+    margin-bottom:15px;
+    padding:12px;
+    border-radius:9px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.mensaje.ok{
+    display:block;
+    background:#dcfce7;
+    color:#166534;
+}
+
+.mensaje.error{
+    display:block;
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:600px){
+
+    .grid,
+    .summary,
+    .buttons{
+        grid-template-columns:1fr;
+    }
+
+    .caja-resumen{
+        font-size:12px;
+    }
+
+    .caja-resumen th,
+    .caja-resumen td{
+        padding:8px 4px;
+    }
+
+}
+
+
+/* =========================
+   IMPRESIÓN
+========================= */
+
+@media print{
+
+    .topbar,
+    .buttons{
+        display:none;
+    }
+
+    body{
+        background:white;
+    }
+
+    .card{
+        box-shadow:none;
+        border:1px solid #ddd;
+    }
+
+    header{
+        background:white;
+        color:black;
+        border-bottom:2px solid #000;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>
+🧾 CIERRE DE TURNO
+</h1>
+
+<p>
+Resumen automático de la caja
+</p>
+
+</header>
+
+
+<div class="topbar">
+
+<button
+class="btn-volver"
+onclick="volverMenu()">
+
+⬅️ Volver al menú
+
+</button>
+
+</div>
+
+
+<div class="container">
+
+
+<div
+id="mensaje"
+class="mensaje">
+</div>
+
+
+<!-- =========================
+     DATOS DEL TURNO
+========================= -->
+
+<div class="card">
+
+<h2>
+📅 Datos del turno
+</h2>
+
+<div class="grid">
+
+
+<div class="field">
+
+<label>
+Fecha
+</label>
+
+<input
+type="date"
+id="fecha">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Cajero
+</label>
+
+<input
+type="text"
+id="cajero"
+placeholder="Nombre del cajero">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Turno
+</label>
+
+<select
+id="turno"
+onchange="calcularCierre()">
+
+<option value="07-15">
+07:00 a 15:00
+</option>
+
+<option value="15-23">
+15:00 a 23:00
+</option>
+
+<option value="23-07">
+23:00 a 07:00
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Saldo inicial
+</label>
+
+<input
+type="number"
+id="saldoInicial"
+inputmode="decimal"
+placeholder="$0"
+oninput="calcularCierre()">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Billetera al cierre
+</label>
+
+<input
+type="number"
+id="billetera"
+inputmode="decimal"
+placeholder="$0"
+oninput="calcularCierre()">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Descuento 10 horas
+</label>
+
+<input
+type="number"
+id="descuento10"
+inputmode="decimal"
+placeholder="$0"
+oninput="calcularCierre()">
+
+</div>
+
+</div>
+
+
+<div
+class="info"
+id="infoTurno">
+
+🕖 El descuento de 10 horas corresponde solamente al turno 07:00 a 15:00.
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     DATOS DE CAJA
+========================= -->
+
+<div class="card">
+
+<h2>
+💰 Datos tomados de Caja
+</h2>
+
+
+<table class="caja-resumen">
+
+<thead>
+
+<tr>
+
+<th>
+Concepto
+</th>
+
+<th>
+V1
+</th>
+
+<th>
+V2
+</th>
+
+<th>
+V3
+</th>
+
+<th>
+V4
+</th>
+
+<th>
+TOTAL
+</th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+
+<tr>
+
+<td>
+💰 Depósito
+</td>
+
+<td id="v1Dep">
+$0
+</td>
+
+<td id="v2Dep">
+$0
+</td>
+
+<td id="v3Dep">
+$0
+</td>
+
+<td id="v4Dep">
+$0
+</td>
+
+<td
+id="totalDep"
+class="total-row">
+$0
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+💸 Retiro
+</td>
+
+<td id="v1Ret">
+$0
+</td>
+
+<td id="v2Ret">
+$0
+</td>
+
+<td id="v3Ret">
+$0
+</td>
+
+<td id="v4Ret">
+$0
+</td>
+
+<td
+id="totalRet"
+class="total-row">
+$0
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+🎁 Fichas regaladas
+</td>
+
+<td id="v1Fichas">
+$0
+</td>
+
+<td id="v2Fichas">
+$0
+</td>
+
+<td id="v3Fichas">
+$0
+</td>
+
+<td id="v4Fichas">
+$0
+</td>
+
+<td
+id="totalFichas"
+class="total-row">
+$0
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+🛡️ Respaldo
+</td>
+
+<td id="v1Respaldo">
+$0
+</td>
+
+<td id="v2Respaldo">
+$0
+</td>
+
+<td id="v3Respaldo">
+$0
+</td>
+
+<td id="v4Respaldo">
+$0
+</td>
+
+<td
+id="totalRespaldo"
+class="total-row">
+$0
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+📈 Venta neta
+</td>
+
+<td id="v1Venta">
+$0
+</td>
+
+<td id="v2Venta">
+$0
+</td>
+
+<td id="v3Venta">
+$0
+</td>
+
+<td id="v4Venta">
+$0
+</td>
+
+<td
+id="totalVenta"
+class="total-row">
+$0
+</td>
+
+</tr>
+
+
+</tbody>
+
+</table>
+
+
+<div
+class="warning">
+
+<b>Reglas:</b>
+
+<br><br>
+
+💰 Depósito → suma.
+
+<br>
+
+💸 Retiro → resta.
+
+<br>
+
+🎁 Fichas regaladas → se descuentan de las ventas.
+
+<br>
+
+🛡️ Respaldo → se descuenta del saldo.
+
+<br>
+
+➖ 0,6% → se calcula sobre el total de depósitos.
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     DESCUENTOS
+========================= -->
+
+<div class="card">
+
+<h2>
+➖ Descuentos automáticos
+</h2>
+
+<div class="summary">
+
+
+<div class="summary-box">
+
+<span>
+0,6% sobre depósitos
+</span>
+
+<strong id="resultado06">
+$0
+</strong>
+
+</div>
+
+
+<div class="summary-box">
+
+<span>
+Descuento 10 horas
+</span>
+
+<strong id="resultado10">
+$0
+</strong>
+
+</div>
+
+
+<div class="summary-box">
+
+<span>
+Fichas regaladas
+</span>
+
+<strong id="resultadoFichas">
+$0
+</strong>
+
+</div>
+
+
+<div class="summary-box">
+
+<span>
+Respaldo
+</span>
+
+<strong id="resultadoRespaldo">
+$0
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     RESUMEN FINAL
+========================= -->
+
+<div class="card">
+
+<h2>
+📊 Resumen del cierre
+</h2>
+
+
+<div class="summary">
+
+
+<div class="summary-box">
+
+<span>
+Total depósitos
+</span>
+
+<strong id="rDepositos">
+$0
+</strong>
+
+</div>
+
+
+<div class="summary-box">
+
+<span>
+Total retiros
+</span>
+
+<strong id="rRetiros">
+$0
+</strong>
+
+</div>
+
+
+<div class="summary-box">
+
+<span>
+Ventas netas
+</span>
+
+<strong id="rVentas">
+$0
+</strong>
+
+</div>
+
+
+<div class="summary-box">
+
+<span>
+Saldo inicial
+</span>
+
+<strong id="rSaldoInicial">
+$0
+</strong>
+
+</div>
+
+
+<div class="summary-box">
+
+<span>
+Billetera cierre
+</span>
+
+<strong id="rBilletera">
+$0
+</strong>
+
+</div>
+
+
+<div class="summary-box">
+
+<span>
+0,6%
+</span>
+
+<strong id="r06">
+$0
+</strong>
+
+</div>
+
+
+<div class="summary-box">
+
+<span>
+10 horas
+</span>
+
+<strong id="r10">
+$0
+</strong>
+
+</div>
+
+
+<div class="summary-box">
+
+<span>
+Fichas
+</span>
+
+<strong id="rFichas">
+$0
+</strong>
+
+</div>
+
+
+<div class="summary-box">
+
+<span>
+Respaldo
+</span>
+
+<strong id="rRespaldo">
+$0
+</strong>
+
+</div>
+
+
+</div>
+
+
+<div
+id="resultadoFinal"
+class="final exacto">
+
+<div class="titulo">
+CIERRE FINAL
+</div>
+
+<div
+class="resultado"
+id="resultadoTexto">
+
+CIERRA EXACTO
+
+</div>
+
+<div
+class="detalle"
+id="resultadoDetalle">
+
+No falta ni sobra dinero.
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     BOTONES
+========================= -->
+
+<div class="buttons">
+
+<button
+class="btn-blue"
+onclick="calcularCierre()">
+
+🔄 ACTUALIZAR
+
+</button>
+
+
+<button
+class="btn-green"
+onclick="guardarCierre()">
+
+💾 GUARDAR CIERRE
+
+</button>
+
+
+<button
+class="btn-gray"
+onclick="window.print()">
+
+🖨️ IMPRIMIR / PDF
+
+</button>
+
+
+<button
+class="btn-red"
+onclick="limpiarCierre()">
+
+🗑️ LIMPIAR
+
+</button>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* =================================================
+   CAJA
+================================================= */
+
+let cajaDefault = {
+
+    V1:{
+        deposito:0,
+        retiro:0,
+        fichas:0,
+        respaldo:0
+    },
+
+    V2:{
+        deposito:0,
+        retiro:0,
+        fichas:0,
+        respaldo:0
+    },
+
+    V3:{
+        deposito:0,
+        retiro:0,
+        fichas:0,
+        respaldo:0
+    },
+
+    V4:{
+        deposito:0,
+        retiro:0,
+        fichas:0,
+        respaldo:0
+    }
+
+};
+
+
+/* =================================================
+   NUMERO
+================================================= */
+
+function numero(id){
+
+    return parseFloat(
+        document.getElementById(id).value
+    ) || 0;
+
+}
+
+
+/* =================================================
+   DINERO
+================================================= */
+
+function dinero(valor){
+
+    return "$" +
+        Math.round(
+            Number(valor) || 0
+        ).toLocaleString(
+            "es-AR"
+        );
+
+}
+
+
+/* =================================================
+   FECHA
+================================================= */
+
+function fechaHoy(){
+
+    const hoy =
+        new Date();
+
+    const yyyy =
+        hoy.getFullYear();
+
+    const mm =
+        String(
+            hoy.getMonth()+1
+        ).padStart(2,"0");
+
+    const dd =
+        String(
+            hoy.getDate()
+        ).padStart(2,"0");
+
+    return yyyy +
+        "-" +
+        mm +
+        "-" +
+        dd;
+
+}
+
+
+/* =================================================
+   CARGAR CAJA
+================================================= */
+
+function obtenerCaja(){
+
+    const datos =
+        localStorage.getItem(
+            "cajaControl"
+        );
+
+
+    if(!datos){
+
+        return cajaDefault;
+
+    }
+
+
+    try{
+
+        const caja =
+            JSON.parse(datos);
+
+
+        return caja;
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        return cajaDefault;
+
+    }
+
+}
+
+
+/* =================================================
+   MOSTRAR CAJA
+================================================= */
+
+function cargarDatosCaja(){
+
+    const caja =
+        obtenerCaja();
+
+
+    let totalDepositos = 0;
+    let totalRetiros = 0;
+    let totalFichas = 0;
+    let totalRespaldo = 0;
+    let totalVentas = 0;
+
+
+    ["V1","V2","V3","V4"].forEach(
+
+        function(venta){
+
+            const datos =
+                caja[venta] ||
+                {
+                    deposito:0,
+                    retiro:0,
+                    fichas:0,
+                    respaldo:0
+                };
+
+
+            const ventaNeta =
+                Number(datos.deposito || 0) +
+                Number(datos.fichas || 0) -
+                Number(datos.retiro || 0) -
+                Number(datos.respaldo || 0);
+
+
+            /*
+               MOSTRAR DATOS
+            */
+
+            document.getElementById(
+                venta.toLowerCase() +
+                "Dep"
+            ).innerText =
+                dinero(datos.deposito);
+
+
+            document.getElementById(
+                venta.toLowerCase() +
+                "Ret"
+            ).innerText =
+                dinero(datos.retiro);
+
+
+            document.getElementById(
+                venta.toLowerCase() +
+                "Fichas"
+            ).innerText =
+                dinero(datos.fichas);
+
+
+            document.getElementById(
+                venta.toLowerCase() +
+                "Respaldo"
+            ).innerText =
+                dinero(datos.respaldo);
+
+
+            document.getElementById(
+                venta.toLowerCase() +
+                "Venta"
+            ).innerText =
+                dinero(ventaNeta);
+
+
+            /*
+               TOTALES
+            */
+
+            totalDepositos +=
+                Number(datos.deposito || 0);
+
+            totalRetiros +=
+                Number(datos.retiro || 0);
+
+            totalFichas +=
+                Number(datos.fichas || 0);
+
+            totalRespaldo +=
+                Number(datos.respaldo || 0);
+
+            totalVentas +=
+                ventaNeta;
+
+        }
+
+    );
+
+
+    document.getElementById(
+        "totalDep"
+    ).innerText =
+        dinero(totalDepositos);
+
+
+    document.getElementById(
+        "totalRet"
+    ).innerText =
+        dinero(totalRetiros);
+
+
+    document.getElementById(
+        "totalFichas"
+    ).innerText =
+        dinero(totalFichas);
+
+
+    document.getElementById(
+        "totalRespaldo"
+    ).innerText =
+        dinero(totalRespaldo);
+
+
+    document.getElementById(
+        "totalVenta"
+    ).innerText =
+        dinero(totalVentas);
+
+
+    return {
+
+        depositos:
+            totalDepositos,
+
+        retiros:
+            totalRetiros,
+
+        fichas:
+            totalFichas,
+
+        respaldo:
+            totalRespaldo,
+
+        ventas:
+            totalVentas
+
+    };
+
+}
+
+
+/* =================================================
+   CAMBIAR TURNO
+================================================= */
+
+function cambiarTurno(){
+
+    const turno =
+        document.getElementById(
+            "turno"
+        ).value;
+
+
+    const descuento =
+        document.getElementById(
+            "descuento10"
+        );
+
+
+    const info =
+        document.getElementById(
+            "infoTurno"
+        );
+
+
+    if(turno === "07-15"){
+
+        descuento.disabled =
+            false;
+
+        info.innerHTML =
+            "🕖 El descuento de 10 horas corresponde solamente al turno 07:00 a 15:00.";
+
+    }
+
+    else{
+
+        descuento.value =
+            "";
+
+        descuento.disabled =
+            true;
+
+        info.innerHTML =
+            "ℹ️ El descuento de 10 horas no corresponde a este turno.";
+
+    }
+
+
+    calcularCierre();
+
+}
+
+
+/* =================================================
+   CALCULAR CIERRE
+================================================= */
+
+function calcularCierre(){
+
+    const datos =
+        cargarDatosCaja();
+
+
+    const saldoInicial =
+        numero("saldoInicial");
+
+
+    const billetera =
+        numero("billetera");
+
+
+    let descuento10 =
+        numero("descuento10");
+
+
+    const turno =
+        document.getElementById(
+            "turno"
+        ).value;
+
+
+    /*
+       SOLO TURNO 07-15
+    */
+
+    if(turno !== "07-15"){
+
+        descuento10 =
+            0;
+
+    }
+
+
+    /*
+       0,6% SOBRE DEPÓSITOS
+    */
+
+    const descuento06 =
+        datos.depositos *
+        0.006;
+
+
+    /*
+       RESULTADO TEÓRICO
+       
+       Saldo inicial
+       + depósitos
+       - retiros
+       - fichas
+       - respaldo
+       - 0,6%
+       - 10 horas
+    */
+
+    const saldoTeorico =
+        saldoInicial +
+        datos.depositos -
+        datos.retiros -
+        datos.fichas -
+        datos.respaldo -
+        descuento06 -
+        descuento10;
+
+
+    /*
+       DIFERENCIA
+    */
+
+    const diferencia =
+        billetera -
+        saldoTeorico;
+
+
+    /*
+       MOSTRAR DESCUENTOS
+    */
+
+    document.getElementById(
+        "resultado06"
+    ).innerText =
+        dinero(descuento06);
+
+
+    document.getElementById(
+        "resultado10"
+    ).innerText =
+        dinero(descuento10);
+
+
+    document.getElementById(
+        "resultadoFichas"
+    ).innerText =
+        dinero(datos.fichas);
+
+
+    document.getElementById(
+        "resultadoRespaldo"
+    ).innerText =
+        dinero(datos.respaldo);
+
+
+    /*
+       RESUMEN
+    */
+
+    document.getElementById(
+        "rDepositos"
+    ).innerText =
+        dinero(datos.depositos);
+
+
+    document.getElementById(
+        "rRetiros"
+    ).innerText =
+        dinero(datos.retiros);
+
+
+    document.getElementById(
+        "rVentas"
+    ).innerText =
+        dinero(datos.ventas);
+
+
+    document.getElementById(
+        "rSaldoInicial"
+    ).innerText =
+        dinero(saldoInicial);
+
+
+    document.getElementById(
+        "rBilletera"
+    ).innerText =
+        dinero(billetera);
+
+
+    document.getElementById(
+        "r06"
+    ).innerText =
+        dinero(descuento06);
+
+
+    document.getElementById(
+        "r10"
+    ).innerText =
+        dinero(descuento10);
+
+
+    document.getElementById(
+        "rFichas"
+    ).innerText =
+        dinero(datos.fichas);
+
+
+    document.getElementById(
+        "rRespaldo"
+    ).innerText =
+        dinero(datos.respaldo);
+
+
+    /*
+       RESULTADO
+    */
+
+    const cajaResultado =
+        document.getElementById(
+            "resultadoFinal"
+        );
+
+
+    const texto =
+        document.getElementById(
+            "resultadoTexto"
+        );
+
+
+    const detalle =
+        document.getElementById(
+            "resultadoDetalle"
+        );
+
+
+    cajaResultado.className =
+        "final";
+
+
+    if(diferencia > 0){
+
+        cajaResultado.classList.add(
+            "sobra"
+        );
+
+
+        texto.innerText =
+            "🟢 SOBRA " +
+            dinero(diferencia);
+
+
+        detalle.innerText =
+            "La billetera tiene más dinero del que debería tener según el cierre.";
+
+    }
+
+    else if(diferencia < 0){
+
+        const falta =
+            Math.abs(diferencia);
+
+
+        cajaResultado.classList.add(
+            "falta"
+        );
+
+
+        texto.innerText =
+            "🔴 FALTA " +
+            dinero(falta);
+
+
+        detalle.innerText =
+            "La billetera tiene menos dinero del que debería tener según el cierre.";
+
+    }
+
+    else{
+
+        cajaResultado.classList.add(
+            "exacto"
+        );
+
+
+        texto.innerText =
+            "🟢 CIERRA EXACTO";
+
+
+        detalle.innerText =
+            "La billetera coincide exactamente con el saldo teórico.";
+
+    }
+
+
+    return {
+
+        datosCaja:
+            datos,
+
+        saldoInicial:
+            saldoInicial,
+
+        billetera:
+            billetera,
+
+        descuento06:
+            descuento06,
+
+        descuento10:
+            descuento10,
+
+        saldoTeorico:
+            saldoTeorico,
+
+        diferencia:
+            diferencia
+
+    };
+
+}
+
+
+/* =================================================
+   GUARDAR CIERRE
+================================================= */
+
+function guardarCierre(){
+
+    const cajero =
+        document.getElementById(
+            "cajero"
+        ).value.trim();
+
+
+    if(!cajero){
+
+        mostrarMensaje(
+            "Ingresá el nombre del cajero.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const datos =
+        calcularCierre();
+
+
+    const cierre = {
+
+        fecha:
+            document.getElementById(
+                "fecha"
+            ).value,
+
+        cajero:
+            cajero,
+
+        turno:
+            document.getElementById(
+                "turno"
+            ).value,
+
+        saldoInicial:
+            datos.saldoInicial,
+
+        billetera:
+            datos.billetera,
+
+        depositos:
+            datos.datosCaja.depositos,
+
+        retiros:
+            datos.datosCaja.retiros,
+
+        fichas:
+            datos.datosCaja.fichas,
+
+        respaldo:
+            datos.datosCaja.respaldo,
+
+        ventas:
+            datos.datosCaja.ventas,
+
+        descuento06:
+            datos.descuento06,
+
+        descuento10:
+            datos.descuento10,
+
+        saldoTeorico:
+            datos.saldoTeorico,
+
+        diferencia:
+            datos.diferencia,
+
+        fechaGuardado:
+            new Date().toISOString()
+
+    };
+
+
+    /*
+       HISTORIAL LOCAL
+    */
+
+    let historial = [];
+
+
+    const guardado =
+        localStorage.getItem(
+            "historialCierres"
+        );
+
+
+    if(guardado){
+
+        try{
+
+            historial =
+                JSON.parse(guardado);
+
+        }
+
+        catch(error){
+
+            historial = [];
+
+        }
+
+    }
+
+
+    historial.push(cierre);
+
+
+    localStorage.setItem(
+        "historialCierres",
+        JSON.stringify(historial)
+    );
+
+
+    mostrarMensaje(
+        "✅ Cierre guardado correctamente.",
+        "ok"
+    );
+
+}
+
+
+/* =================================================
+   LIMPIAR
+================================================= */
+
+function limpiarCierre(){
+
+    const confirmar =
+        confirm(
+            "¿Querés limpiar los datos del cierre?"
+        );
+
+
+    if(!confirmar){
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "saldoInicial"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "billetera"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "descuento10"
+    ).value =
+        "";
+
+
+    calcularCierre();
+
+
+    mostrarMensaje(
+        "🧹 Datos del cierre limpiados.",
+        "ok"
+    );
+
+}
+
+
+/* =================================================
+   MENSAJE
+================================================= */
+
+function mostrarMensaje(
+    texto,
+    tipo
+){
+
+    const mensaje =
+        document.getElementById(
+            "mensaje"
+        );
+
+
+    mensaje.innerText =
+        texto;
+
+
+    mensaje.className =
+        "mensaje " +
+        tipo;
+
+
+    setTimeout(
+
+        function(){
+
+            mensaje.className =
+                "mensaje";
+
+        },
+
+        3000
+
+    );
+
+}
+
+
+/* =================================================
+   VOLVER AL MENÚ
+================================================= */
+
+function volverMenu(){
+
+    window.location.href =
+        "index.html";
+
+}
+
+
+/* =================================================
+   INICIO
+================================================= */
+
+document.getElementById(
+    "fecha"
+).value =
+    fechaHoy();
+
+
+/*
+   RECUPERAR CAJERO
+*/
+
+const cajeroGuardado =
+    localStorage.getItem(
+        "cajeroControl"
+    );
+
+
+if(cajeroGuardado){
+
+    document.getElementById(
+        "cajero"
+    ).value =
+        cajeroGuardado;
+
+}
+
+
+/*
+   RECUPERAR TURNO
+*/
+
+const turnoGuardado =
+    localStorage.getItem(
+        "turnoControl"
+    );
+
+
+if(turnoGuardado){
+
+    document.getElementById(
+        "turno"
+    ).value =
+        turnoGuardado;
+
+}
+
+
+cambiarTurno();
+
+cargarDatosCaja();
+
+calcularCierre();
+
+</script>
+
+</body>
+
+</html>

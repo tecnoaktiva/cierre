@@ -9,7 +9,7 @@
 
 <title>Control de Cierre</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 
 <style>
 
@@ -455,110 +455,23 @@ header p{
 <script>
 
 /* =================================================
-   SUPABASE
-================================================= */
-
-const SUPABASE_URL =
-"https://cynrheajajovikwvapsb.supabase.co";
-
-const SUPABASE_KEY =
-"sb_publishable_vjvUhh-flBiAv1WXHELWDw_kHjfWOCU";
-
-
-const supabaseClient =
-supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
-
-
-/* =================================================
    INICIAR SESIÓN
 ================================================= */
 
-async function iniciarSesion(){
+function iniciarSesion(){
 
-    const email =
-        document.getElementById(
-            "loginEmail"
-        ).value.trim();
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const errorBox = document.getElementById("loginError");
 
+    errorBox.style.display = "none";
 
-    const password =
-        document.getElementById(
-            "loginPassword"
-        ).value;
-
-
-    const errorBox =
-        document.getElementById(
-            "loginError"
-        );
-
-
-    errorBox.style.display =
-        "none";
-
-
-    if(!email || !password){
-
-        errorBox.innerText =
-            "Ingresá el usuario y la contraseña.";
-
-        errorBox.style.display =
-            "block";
-
-        return;
-
-    }
-
-
-    try{
-
-        const {
-            data,
-            error
-        } =
-        await supabaseClient.auth.signInWithPassword({
-
-            email:email,
-
-            password:password
-
-        });
-
-
-        if(error){
-
-            console.error(error);
-
-            errorBox.innerText =
-                "Usuario o contraseña incorrectos.";
-
-            errorBox.style.display =
-                "block";
-
-            return;
-
-        }
-
-
+    if(email === "cierre@admin.com" && password === "1234"){
         mostrarMenu();
-
+    } else {
+        errorBox.innerText = "Usuario o contraseña incorrectos.";
+        errorBox.style.display = "block";
     }
-
-    catch(error){
-
-        console.error(error);
-
-        errorBox.innerText =
-            "No se pudo iniciar sesión.";
-
-        errorBox.style.display =
-            "block";
-
-    }
-
 }
 
 
@@ -594,93 +507,20 @@ function abrirPanel(pagina){
 }
 
 
-/* =================================================
-   CERRAR SESIÓN
-================================================= */
-
-async function cerrarSesion(){
-
-    await supabaseClient.auth.signOut();
-
+function cerrarSesion(){
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("loginScreen").style.display = "flex";
+    document.getElementById("loginPassword").value = "";
 }
-
-
-/* =================================================
-   CONTROL DE SESIÓN
-================================================= */
-
-supabaseClient.auth.onAuthStateChange(
-
-    function(event,session){
-
-        if(session){
-
-            mostrarMenu();
-
-        }
-
-        else{
-
-            document.getElementById(
-                "menu"
-            ).style.display =
-                "none";
-
-
-            document.getElementById(
-                "loginScreen"
-            ).style.display =
-                "flex";
-
-
-            document.getElementById(
-                "loginPassword"
-            ).value =
-                "";
-
-        }
-
-    }
-
-);
 
 
 /* =================================================
    COMPROBAR SESIÓN
 ================================================= */
 
-async function comprobarSesion(){
-
-    const {
-        data
-    } =
-    await supabaseClient.auth.getSession();
-
-
-    if(
-        data &&
-        data.session
-    ){
-
-        mostrarMenu();
-
-    }
-
-    else{
-
-        document.getElementById(
-            "loginScreen"
-        ).style.display =
-            "flex";
-
-
-        document.getElementById(
-            "menu"
-        ).style.display =
-            "none";
-
-    }
-
+function comprobarSesion(){
+    document.getElementById("loginScreen").style.display = "flex";
+    document.getElementById("menu").style.display = "none";
 }
 
 

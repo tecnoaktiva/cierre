@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="es">
 
 <head>
@@ -34,4 +33,661 @@ body{
     min-height:100vh;
     display:flex;
     align-items:center;
-    justify-cont
+    justify-content:center;
+    padding:20px;
+    background:#eef2f7;
+}
+
+
+.login-card{
+    width:100%;
+    max-width:400px;
+    background:white;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 5px 25px rgba(0,0,0,.12);
+}
+
+
+.login-card h1{
+    text-align:center;
+    margin:0;
+    color:#172554;
+    font-size:26px;
+}
+
+
+.login-card p{
+    text-align:center;
+    color:#64748b;
+    margin:8px 0 25px;
+    font-size:14px;
+}
+
+
+.login-field{
+    margin-bottom:16px;
+}
+
+
+.login-field label{
+    display:block;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+
+.login-field input{
+    width:100%;
+    padding:13px;
+    border:1px solid #cbd5e1;
+    border-radius:10px;
+    font-size:16px;
+}
+
+
+.login-field input:focus{
+    outline:none;
+    border-color:#2563eb;
+}
+
+
+.login-button{
+    width:100%;
+    background:#2563eb;
+    color:white;
+    border:0;
+    border-radius:10px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+
+.login-button:hover{
+    background:#1d4ed8;
+}
+
+
+.login-error{
+    display:none;
+    margin-top:14px;
+    background:#fee2e2;
+    color:#991b1b;
+    padding:11px;
+    border-radius:9px;
+    font-size:13px;
+    text-align:center;
+}
+
+
+/* =========================
+   MENU PRINCIPAL
+========================= */
+
+#menu{
+    display:none;
+    min-height:100vh;
+}
+
+
+header{
+    background:#172554;
+    color:white;
+    padding:22px 15px;
+    text-align:center;
+}
+
+
+header h1{
+    margin:0;
+    font-size:24px;
+}
+
+
+header p{
+    margin:7px 0 0;
+    font-size:14px;
+}
+
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:25px 15px;
+}
+
+
+.paneles{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+
+.panel{
+    background:white;
+    border:0;
+    border-radius:16px;
+    padding:30px 20px;
+    min-height:170px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    cursor:pointer;
+    transition:.2s;
+}
+
+
+.panel:hover{
+    transform:translateY(-3px);
+    box-shadow:0 7px 20px rgba(0,0,0,.13);
+}
+
+
+.panel:active{
+    transform:scale(.98);
+}
+
+
+.panel .icono{
+    font-size:42px;
+    margin-bottom:12px;
+}
+
+
+.panel h3{
+    margin:0;
+    font-size:19px;
+    color:#172554;
+}
+
+
+.panel p{
+    margin:8px 0 0;
+    color:#64748b;
+    font-size:13px;
+}
+
+
+/* =========================
+   CERRAR SESIÓN
+========================= */
+
+.logout{
+    display:block;
+    margin:25px auto 0;
+    padding:12px 20px;
+    border:0;
+    border-radius:10px;
+    background:#dc2626;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+
+.logout:hover{
+    background:#b91c1c;
+}
+
+
+/* =========================
+   CELULAR
+========================= */
+
+@media(max-width:600px){
+
+    .paneles{
+        grid-template-columns:1fr;
+    }
+
+    .panel{
+        min-height:145px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =================================================
+     LOGIN
+================================================= -->
+
+<div id="loginScreen">
+
+    <div class="login-card">
+
+        <h1>
+            🔐 CONTROL DE CIERRE
+        </h1>
+
+        <p>
+            Ingresá para continuar
+        </p>
+
+
+        <div class="login-field">
+
+            <label>
+                Usuario / Correo
+            </label>
+
+            <input
+                type="email"
+                id="loginEmail"
+                value="cierre@admin.com"
+                placeholder="Correo"
+                autocomplete="username">
+
+        </div>
+
+
+        <div class="login-field">
+
+            <label>
+                Contraseña
+            </label>
+
+            <input
+                type="password"
+                id="loginPassword"
+                placeholder="Contraseña"
+                autocomplete="current-password"
+                onkeydown="if(event.key==='Enter') iniciarSesion()">
+
+        </div>
+
+
+        <button
+            class="login-button"
+            onclick="iniciarSesion()">
+
+            🔓 INGRESAR
+
+        </button>
+
+
+        <div
+            id="loginError"
+            class="login-error">
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     MENÚ PRINCIPAL
+================================================= -->
+
+<div id="menu">
+
+    <header>
+
+        <h1>
+            CONTROL DE CIERRE
+        </h1>
+
+    </header>
+
+
+    <div class="container">
+
+        <div class="paneles">
+
+
+            <!-- =================
+                 CAJA
+            ================== -->
+
+            <button
+                class="panel"
+                onclick="abrirPanel('caja.html')">
+
+                <div class="icono">
+                    💰
+                </div>
+
+                <h3>
+                    CAJA
+                </h3>
+
+                <p>
+                    Cargar y controlar las ventas
+                </p>
+
+            </button>
+
+
+            <!-- =================
+                 CIERRE
+            ================== -->
+
+            <button
+                class="panel"
+                onclick="abrirPanel('cierre.html')">
+
+                <div class="icono">
+                    🧾
+                </div>
+
+                <h3>
+                    CIERRE DE TURNO
+                </h3>
+
+                <p>
+                    Realizar el cierre del cajero
+                </p>
+
+            </button>
+
+
+            <!-- =================
+                 RESUMEN
+            ================== -->
+
+            <button
+                class="panel"
+                onclick="abrirPanel('semanal.html')">
+
+                <div class="icono">
+                    📊
+                </div>
+
+                <h3>
+                    RESUMEN DE VENTAS
+                </h3>
+
+                <p>
+                    Consultar las ventas
+                </p>
+
+            </button>
+
+
+            <!-- =================
+                 ADMIN
+            ================== -->
+
+            <button
+                class="panel"
+                onclick="abrirPanel('admin.html')">
+
+                <div class="icono">
+                    ⚙️
+                </div>
+
+                <h3>
+                    PANEL ADMINISTRATIVO
+                </h3>
+
+                <p>
+                    Administración del sistema
+                </p>
+
+            </button>
+
+
+        </div>
+
+
+        <button
+            class="logout"
+            onclick="cerrarSesion()">
+
+            🚪 CERRAR SESIÓN
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =================================================
+   SUPABASE
+================================================= */
+
+const SUPABASE_URL =
+"https://cynrheajajovikwvapsb.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_vjvUhh-flBiAv1WXHELWDw_kHjfWOCU";
+
+
+const supabaseClient =
+supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+/* =================================================
+   INICIAR SESIÓN
+================================================= */
+
+async function iniciarSesion(){
+
+    const email =
+        document.getElementById(
+            "loginEmail"
+        ).value.trim();
+
+
+    const password =
+        document.getElementById(
+            "loginPassword"
+        ).value;
+
+
+    const errorBox =
+        document.getElementById(
+            "loginError"
+        );
+
+
+    errorBox.style.display =
+        "none";
+
+
+    if(!email || !password){
+
+        errorBox.innerText =
+            "Ingresá el usuario y la contraseña.";
+
+        errorBox.style.display =
+            "block";
+
+        return;
+
+    }
+
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+        await supabaseClient.auth.signInWithPassword({
+
+            email:email,
+
+            password:password
+
+        });
+
+
+        if(error){
+
+            console.error(error);
+
+            errorBox.innerText =
+                "Usuario o contraseña incorrectos.";
+
+            errorBox.style.display =
+                "block";
+
+            return;
+
+        }
+
+
+        mostrarMenu();
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        errorBox.innerText =
+            "No se pudo iniciar sesión.";
+
+        errorBox.style.display =
+            "block";
+
+    }
+
+}
+
+
+/* =================================================
+   MOSTRAR MENÚ
+================================================= */
+
+function mostrarMenu(){
+
+    document.getElementById(
+        "loginScreen"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "menu"
+    ).style.display =
+        "block";
+
+}
+
+
+/* =================================================
+   ABRIR PANEL
+================================================= */
+
+function abrirPanel(pagina){
+
+    window.location.href =
+        pagina;
+
+}
+
+
+/* =================================================
+   CERRAR SESIÓN
+================================================= */
+
+async function cerrarSesion(){
+
+    await supabaseClient.auth.signOut();
+
+}
+
+
+/* =================================================
+   CONTROL DE SESIÓN
+================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+
+    function(event,session){
+
+        if(session){
+
+            mostrarMenu();
+
+        }
+
+        else{
+
+            document.getElementById(
+                "menu"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "loginScreen"
+            ).style.display =
+                "flex";
+
+
+            document.getElementById(
+                "loginPassword"
+            ).value =
+                "";
+
+        }
+
+    }
+
+);
+
+
+/* =================================================
+   COMPROBAR SESIÓN
+================================================= */
+
+async function comprobarSesion(){
+
+    const {
+        data
+    } =
+    await supabaseClient.auth.getSession();
+
+
+    if(
+        data &&
+        data.session
+    ){
+
+        mostrarMenu();
+
+    }
+
+    else{
+
+        document.getElementById(
+            "loginScreen"
+        ).style.display =
+            "flex";
+
+
+        document.getElementById(
+            "menu"
+        ).style.display =
+            "none";
+
+    }
+
+}
+
+
+comprobarSesion();
+
+</script>
+
+</body>
+
+</html>

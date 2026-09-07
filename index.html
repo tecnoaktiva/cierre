@@ -467,6 +467,7 @@ function iniciarSesion(){
     errorBox.style.display = "none";
 
     if(email === "cierre@admin.com" && password === "1234"){
+        localStorage.setItem("cierreSesion", "true");
         mostrarMenu();
     } else {
         errorBox.innerText = "Usuario o contraseña incorrectos.";
@@ -508,6 +509,7 @@ function abrirPanel(pagina){
 
 
 function cerrarSesion(){
+    localStorage.removeItem("cierreSesion");
     document.getElementById("menu").style.display = "none";
     document.getElementById("loginScreen").style.display = "flex";
     document.getElementById("loginPassword").value = "";
@@ -519,8 +521,12 @@ function cerrarSesion(){
 ================================================= */
 
 function comprobarSesion(){
-    document.getElementById("loginScreen").style.display = "flex";
-    document.getElementById("menu").style.display = "none";
+    if(localStorage.getItem("cierreSesion") === "true"){
+        mostrarMenu();
+    } else {
+        document.getElementById("loginScreen").style.display = "flex";
+        document.getElementById("menu").style.display = "none";
+    }
 }
 
 

@@ -130,22 +130,58 @@ input[type=number]{
     text-align:center;
 }
 
-.venta-selector label{
+.venta-selector > label{
     display:block;
     font-size:13px;
     font-weight:bold;
-    margin-bottom:8px;
+    margin-bottom:12px;
     color:#475569;
 }
 
-.venta-selector select{
-    max-width:300px;
-    margin:auto;
-    display:block;
-    text-align:center;
+
+/* BOTONES V1 V2 V3 V4 */
+
+.ventas{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+.venta{
+    position:relative;
+}
+
+.venta input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+}
+
+.venta label{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:58px;
+    padding:12px 8px;
+    border:2px solid #cbd5e1;
+    border-radius:12px;
+    background:white;
+    color:#172033;
+    cursor:pointer;
     font-size:18px;
     font-weight:bold;
-    color:#172554;
+    transition:.15s;
+}
+
+.venta label:hover{
+    border-color:#2563eb;
+}
+
+.venta input:checked + label{
+    background:#2563eb;
+    border-color:#1d4ed8;
+    color:white;
+    box-shadow:0 3px 8px rgba(37,99,235,.25);
 }
 
 
@@ -186,7 +222,9 @@ input[type=number]{
 }
 
 .billetera label{
-    display:block;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     text-align:center;
     padding:12px 6px;
     border:2px solid #cbd5e1;
@@ -195,10 +233,12 @@ input[type=number]{
     cursor:pointer;
     font-size:13px;
     font-weight:bold;
-    min-height:48px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    min-height:52px;
+    transition:.15s;
+}
+
+.billetera label:hover{
+    border-color:#2563eb;
 }
 
 .billetera input:checked + label{
@@ -270,17 +310,17 @@ input[type=number]{
     margin-bottom:10px;
 }
 
+.descuento-row:last-child{
+    margin-bottom:0;
+}
+
 .descuento-row label{
     font-weight:bold;
     font-size:14px;
 }
 
-.descuento-automatico{
-    background:#f3f4f6;
-    padding:12px;
-    border-radius:9px;
-    font-size:17px;
-    font-weight:bold;
+.descuento-row input{
+    font-size:18px;
 }
 
 
@@ -463,6 +503,17 @@ input[type=number]{
         grid-template-columns:1fr;
     }
 
+    .ventas{
+        grid-template-columns:repeat(4,1fr);
+        gap:7px;
+    }
+
+    .venta label{
+        min-height:54px;
+        padding:10px 4px;
+        font-size:16px;
+    }
+
     .billeteras{
         grid-template-columns:1fr 1fr;
     }
@@ -576,14 +627,70 @@ placeholder="Nombre del cajero">
 
 <label>VENTA QUE ESTÁS CARGANDO</label>
 
-<select id="ventaSeleccionada">
 
-<option value="V1">VENTA 1 — V1</option>
-<option value="V2">VENTA 2 — V2</option>
-<option value="V3">VENTA 3 — V3</option>
-<option value="V4">VENTA 4 — V4</option>
+<div class="ventas">
 
-</select>
+<div class="venta">
+
+<input
+type="radio"
+name="venta"
+id="v1"
+value="V1"
+checked>
+
+<label for="v1">
+V1
+</label>
+
+</div>
+
+
+<div class="venta">
+
+<input
+type="radio"
+name="venta"
+id="v2"
+value="V2">
+
+<label for="v2">
+V2
+</label>
+
+</div>
+
+
+<div class="venta">
+
+<input
+type="radio"
+name="venta"
+id="v3"
+value="V3">
+
+<label for="v3">
+V3
+</label>
+
+</div>
+
+
+<div class="venta">
+
+<input
+type="radio"
+name="venta"
+id="v4"
+value="V4">
+
+<label for="v4">
+V4
+</label>
+
+</div>
+
+</div>
 
 </div>
 
@@ -778,13 +885,11 @@ placeholder="$0">
 
 <label>📉 Descuento 0,6% (-)</label>
 
-<div
-class="descuento-automatico"
-id="descuento06">
-
-$0
-
-</div>
+<input
+type="number"
+id="descuento06"
+inputmode="decimal"
+placeholder="$0">
 
 </div>
 
@@ -1147,7 +1252,8 @@ function cargarBilleteras(){
 
     for(let i=0;i<5;i++){
 
-        const numero = i + 1;
+        const numero =
+            i + 1;
 
         document.getElementById(
             "nombreB" + numero
@@ -1216,10 +1322,16 @@ let caja = {
 let descuentos = {
 
     descuento10:0,
-
     descuento06:0
 
 };
+
+
+/* =================================================
+   VENTA SELECCIONADA
+================================================= */
+
+let ventaActual = "V1";
 
 
 /* =================================================
@@ -1237,8 +1349,52 @@ function cargarCaja(){
 
         try{
 
-            caja =
+            const guardada =
                 JSON.parse(datos);
+
+            caja = {
+
+                V1:{
+                    deposito:0,
+                    retiro:0,
+                    fichas:0,
+                    respaldo:0,
+                    gastos:0,
+                    billetera:null,
+                    ...(guardada.V1 || {})
+                },
+
+                V2:{
+                    deposito:0,
+                    retiro:0,
+                    fichas:0,
+                    respaldo:0,
+                    gastos:0,
+                    billetera:null,
+                    ...(guardada.V2 || {})
+                },
+
+                V3:{
+                    deposito:0,
+                    retiro:0,
+                    fichas:0,
+                    respaldo:0,
+                    gastos:0,
+                    billetera:null,
+                    ...(guardada.V3 || {})
+                },
+
+                V4:{
+                    deposito:0,
+                    retiro:0,
+                    fichas:0,
+                    respaldo:0,
+                    gastos:0,
+                    billetera:null,
+                    ...(guardada.V4 || {})
+                }
+
+            };
 
         }
         catch(error){
@@ -1259,8 +1415,18 @@ function cargarCaja(){
 
         try{
 
-            descuentos =
+            const guardados =
                 JSON.parse(desc);
+
+            descuentos = {
+
+                descuento10:
+                    Number(guardados.descuento10) || 0,
+
+                descuento06:
+                    Number(guardados.descuento06) || 0
+
+            };
 
         }
         catch(error){
@@ -1304,6 +1470,10 @@ function cargarCaja(){
 
     cargarBilleteras();
 
+    actualizarEstadoDescuento10();
+
+    cargarVentaActual();
+
     actualizarResumen();
 
 }
@@ -1334,44 +1504,218 @@ function obtenerBilletera(){
 
 
 /* =================================================
+   SELECCIONAR VENTA
+================================================= */
+
+document.querySelectorAll(
+    'input[name="venta"]'
+).forEach(
+
+    function(input){
+
+        input.addEventListener(
+            "change",
+            function(){
+
+                guardarCamposVentaActual();
+
+                ventaActual =
+                    this.value;
+
+                cargarVentaActual();
+
+            }
+        );
+
+    }
+
+);
+
+
+/* =================================================
+   GUARDAR CAMPOS DE LA VENTA ACTUAL
+================================================= */
+
+function guardarCamposVentaActual(){
+
+    if(!caja[ventaActual]){
+        return;
+    }
+
+    caja[ventaActual].deposito =
+        numero("deposito");
+
+    caja[ventaActual].retiro =
+        numero("retiro");
+
+    caja[ventaActual].fichas =
+        numero("fichas");
+
+    caja[ventaActual].respaldo =
+        numero("respaldo");
+
+    caja[ventaActual].gastos =
+        numero("gastos");
+
+    const billetera =
+        obtenerBilletera();
+
+    if(billetera !== null){
+
+        caja[ventaActual].billetera =
+            billetera;
+
+    }
+
+}
+
+
+/* =================================================
+   CARGAR DATOS DE VENTA
+================================================= */
+
+function cargarVentaActual(){
+
+    const datos =
+        caja[ventaActual];
+
+    if(!datos){
+        return;
+    }
+
+
+    document.getElementById(
+        "deposito"
+    ).value =
+        datos.deposito || "";
+
+
+    document.getElementById(
+        "retiro"
+    ).value =
+        datos.retiro || "";
+
+
+    document.getElementById(
+        "fichas"
+    ).value =
+        datos.fichas || "";
+
+
+    document.getElementById(
+        "respaldo"
+    ).value =
+        datos.respaldo || "";
+
+
+    document.getElementById(
+        "gastos"
+    ).value =
+        datos.gastos || "";
+
+
+    /*
+       RECUPERAR BILLETERA DE ESA VENTA
+    */
+
+    document.querySelectorAll(
+        'input[name="billetera"]'
+    ).forEach(
+
+        function(input){
+
+            input.checked =
+                Number(input.value) ===
+                Number(datos.billetera);
+
+        }
+
+    );
+
+
+    actualizarEstadoDescuento10();
+
+}
+
+
+/* =================================================
+   ESTADO DESCUENTO 10 HORAS
+================================================= */
+
+function actualizarEstadoDescuento10(){
+
+    const turno =
+        document.getElementById(
+            "turno"
+        ).value;
+
+    const campo =
+        document.getElementById(
+            "descuento10"
+        );
+
+
+    if(turno === "07-15"){
+
+        campo.disabled = false;
+
+        campo.placeholder =
+            "$0";
+
+    }
+    else{
+
+        campo.value = "";
+
+        campo.disabled = true;
+
+    }
+
+}
+
+
+/* =================================================
    GUARDAR MOVIMIENTO
 ================================================= */
 
 function guardarMovimiento(){
 
-    const venta =
-        document.getElementById(
-            "ventaSeleccionada"
-        ).value;
+    guardarCamposVentaActual();
 
 
     const deposito =
         numero("deposito");
 
-
     const retiro =
         numero("retiro");
-
 
     const fichas =
         numero("fichas");
 
-
     const respaldo =
         numero("respaldo");
-
 
     const gastos =
         numero("gastos");
 
-
     const descuento10 =
-        numero("descuento10");
+        document.getElementById(
+            "descuento10"
+        ).disabled
+        ? 0
+        : numero("descuento10");
+
+    const descuento06 =
+        numero("descuento06");
 
 
     const billetera =
         obtenerBilletera();
 
+
+    /*
+       VALIDAR QUE HAYA ALGO PARA GUARDAR
+    */
 
     if(
         deposito === 0 &&
@@ -1379,7 +1723,8 @@ function guardarMovimiento(){
         fichas === 0 &&
         respaldo === 0 &&
         gastos === 0 &&
-        descuento10 === 0
+        descuento10 === 0 &&
+        descuento06 === 0
     ){
 
         mostrarMensaje(
@@ -1393,7 +1738,7 @@ function guardarMovimiento(){
 
 
     /*
-       SI HAY DINERO EN MOVIMIENTO,
+       SI HAY DEPÓSITO O RETIRO,
        DEBE SELECCIONARSE UNA BILLETERA
     */
 
@@ -1417,54 +1762,46 @@ function guardarMovimiento(){
 
 
     /*
-       GUARDAMOS EL MOVIMIENTO
+       GUARDAR MOVIMIENTO
     */
 
-    caja[venta].deposito +=
+    caja[ventaActual].deposito =
         deposito;
 
-    caja[venta].retiro +=
+    caja[ventaActual].retiro =
         retiro;
 
-    caja[venta].fichas +=
+    caja[ventaActual].fichas =
         fichas;
 
-    caja[venta].respaldo +=
+    caja[ventaActual].respaldo =
         respaldo;
 
-    caja[venta].gastos +=
+    caja[ventaActual].gastos =
         gastos;
 
 
     /*
-       GUARDAMOS LA BILLETERA
+       GUARDAR BILLETERA
     */
 
     if(billetera !== null){
 
-        caja[venta].billetera =
+        caja[ventaActual].billetera =
             billetera;
 
     }
 
 
     /*
-       DESCUENTO 10 HORAS
+       LOS DESCUENTOS SON MANUALES
+       Y VAN A UNIVERSAL
     */
 
-    descuentos.descuento10 +=
+    descuentos.descuento10 =
         descuento10;
 
-
-    /*
-       0,6% AUTOMÁTICO SOBRE DEPÓSITOS
-    */
-
-    const descuento06 =
-        deposito * 0.006;
-
-
-    descuentos.descuento06 +=
+    descuentos.descuento06 =
         descuento06;
 
 
@@ -1501,7 +1838,14 @@ function guardarMovimiento(){
 
 
     /*
-       LIMPIAR CAMPOS
+       ACTUALIZAR RESUMEN
+    */
+
+    actualizarResumen();
+
+
+    /*
+       LIMPIAR CAMPOS DE CARGA
     */
 
     document.getElementById(
@@ -1528,52 +1872,24 @@ function guardarMovimiento(){
         "descuento10"
     ).value = "";
 
-
-    document.querySelectorAll(
-        'input[name="billetera"]'
-    ).forEach(
-        function(input){
-
-            input.checked = false;
-
-        }
-    );
+    document.getElementById(
+        "descuento06"
+    ).value = "";
 
 
-    actualizarResumen();
-
+    /*
+       NO BORRAMOS LA BILLETERA
+       DE LA VENTA GUARDADA.
+       AL VOLVER A LA VENTA SE RECUPERA.
+    */
 
     mostrarMensaje(
-        "✅ Movimiento guardado en " + venta,
+        "✅ Movimiento guardado en " +
+        ventaActual,
         "ok"
     );
 
 }
-
-
-/* =================================================
-   ACTUALIZAR 0,6% MIENTRAS SE ESCRIBE
-================================================= */
-
-document.getElementById(
-    "deposito"
-).addEventListener(
-    "input",
-    function(){
-
-        const valor =
-            parseFloat(this.value) || 0;
-
-        const comision =
-            valor * 0.006;
-
-        document.getElementById(
-            "descuento06"
-        ).innerText =
-            dinero(comision);
-
-    }
-);
 
 
 /* =================================================
@@ -1701,25 +2017,8 @@ function actualizarResumen(){
 
 
     /*
-       0,6% TOTAL
-    */
-
-    const total06 =
-        totalDeposito * 0.006;
-
-
-    descuentos.descuento06 =
-        total06;
-
-
-    localStorage.setItem(
-        "descuentosControl",
-        JSON.stringify(descuentos)
-    );
-
-
-    /*
-       MOSTRAR TOTALES
+       TOTALES
+       LOS DESCUENTOS SON MANUALES
     */
 
     document.getElementById(
@@ -1773,13 +2072,7 @@ function actualizarResumen(){
     document.getElementById(
         "total06"
     ).innerText =
-        dinero(total06);
-
-
-    document.getElementById(
-        "descuento06"
-    ).innerText =
-        dinero(total06);
+        dinero(descuentos.descuento06);
 
 
     actualizarResumenBilleteras();
@@ -1794,6 +2087,7 @@ function actualizarResumen(){
 function actualizarResumenBilleteras(){
 
     let resumen = [];
+
 
     for(let i=0;i<5;i++){
 
@@ -1822,15 +2116,22 @@ function actualizarResumenBilleteras(){
             ){
 
                 const b =
-                    datos.billetera;
+                    Number(datos.billetera);
 
 
-                resumen[b].deposito +=
-                    datos.deposito;
+                if(
+                    b >= 0 &&
+                    b < 5
+                ){
+
+                    resumen[b].deposito +=
+                        Number(datos.deposito) || 0;
 
 
-                resumen[b].retiro +=
-                    datos.retiro;
+                    resumen[b].retiro +=
+                        Number(datos.retiro) || 0;
+
+                }
 
             }
 
@@ -1841,12 +2142,15 @@ function actualizarResumenBilleteras(){
 
     /*
        UNIVERSAL = BILLETERA 5
-       DESCUENTOS AUTOMÁTICOS
+
+       DESCUENTOS MANUALES
     */
 
     resumen[4].descuento =
-        descuentos.descuento10 +
-        descuentos.descuento06;
+        Number(descuentos.descuento10) || 0;
+
+    resumen[4].descuento +=
+        Number(descuentos.descuento06) || 0;
 
 
     for(let i=0;i<5;i++){
@@ -2010,6 +2314,8 @@ function limpiarCaja(){
     );
 
 
+    cargarVentaActual();
+
     actualizarResumen();
 
 
@@ -2066,6 +2372,8 @@ document.getElementById(
             "turnoControl",
             this.value
         );
+
+        actualizarEstadoDescuento10();
 
     }
 );

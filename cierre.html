@@ -4,7 +4,6 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Cierre de Turno</title>
@@ -40,7 +39,7 @@ header p{
 }
 
 .topbar{
-    max-width:900px;
+    max-width:1000px;
     margin:auto;
     padding:12px 15px 0;
 }
@@ -56,7 +55,7 @@ header p{
 }
 
 .container{
-    max-width:900px;
+    max-width:1000px;
     margin:auto;
     padding:18px 15px 30px;
 }
@@ -120,28 +119,33 @@ input[type=number]{
 
 
 /* =========================
-   DATOS DE CAJA
+   TABLAS
 ========================= */
 
-.caja-resumen{
+.tabla-contenedor{
+    width:100%;
+    overflow-x:auto;
+}
+
+table{
     width:100%;
     border-collapse:collapse;
 }
 
-.caja-resumen th,
-.caja-resumen td{
+th,
+td{
     border:1px solid #e2e8f0;
     padding:10px 7px;
     text-align:center;
 }
 
-.caja-resumen th{
+th{
     background:#172554;
     color:white;
     font-size:13px;
 }
 
-.caja-resumen td:first-child{
+td:first-child{
     text-align:left;
     font-weight:bold;
 }
@@ -149,6 +153,31 @@ input[type=number]{
 .total-row{
     background:#f1f5f9;
     font-weight:bold;
+}
+
+
+/* =========================
+   BILLETERAS
+========================= */
+
+.billetera-titulo{
+    margin-top:20px;
+    margin-bottom:10px;
+    font-weight:bold;
+    color:#172554;
+}
+
+.billetera-table th{
+    background:#334155;
+}
+
+.billetera-especial{
+    background:#fff7ed;
+    font-weight:bold;
+}
+
+.billetera-especial td{
+    border-color:#fed7aa;
 }
 
 
@@ -281,11 +310,6 @@ button{
     color:white;
 }
 
-.btn-dark{
-    background:#172033;
-    color:white;
-}
-
 .btn-gray{
     background:#475569;
     color:white;
@@ -330,13 +354,10 @@ button{
         grid-template-columns:1fr;
     }
 
-    .caja-resumen{
+    th,
+    td{
+        padding:8px 5px;
         font-size:12px;
-    }
-
-    .caja-resumen th,
-    .caja-resumen td{
-        padding:8px 4px;
     }
 
 }
@@ -380,13 +401,9 @@ button{
 
 <header>
 
-<h1>
-🧾 CIERRE DE TURNO
-</h1>
+<h1>🧾 CIERRE DE TURNO</h1>
 
-<p>
-Resumen automático de la caja
-</p>
+<p>Resumen automático de la caja y billeteras</p>
 
 </header>
 
@@ -419,18 +436,13 @@ class="mensaje">
 
 <div class="card">
 
-<h2>
-📅 Datos del turno
-</h2>
+<h2>📅 Datos del turno</h2>
 
 <div class="grid">
 
-
 <div class="field">
 
-<label>
-Fecha
-</label>
+<label>Fecha</label>
 
 <input
 type="date"
@@ -441,9 +453,7 @@ id="fecha">
 
 <div class="field">
 
-<label>
-Cajero
-</label>
+<label>Cajero</label>
 
 <input
 type="text"
@@ -455,13 +465,11 @@ placeholder="Nombre del cajero">
 
 <div class="field">
 
-<label>
-Turno
-</label>
+<label>Turno</label>
 
 <select
 id="turno"
-onchange="calcularCierre()">
+onchange="cambiarTurno()">
 
 <option value="07-15">
 07:00 a 15:00
@@ -482,9 +490,7 @@ onchange="calcularCierre()">
 
 <div class="field">
 
-<label>
-Saldo inicial
-</label>
+<label>Saldo inicial</label>
 
 <input
 type="number"
@@ -498,9 +504,7 @@ oninput="calcularCierre()">
 
 <div class="field">
 
-<label>
-Billetera al cierre
-</label>
+<label>Dinero real al cierre</label>
 
 <input
 type="number"
@@ -514,9 +518,7 @@ oninput="calcularCierre()">
 
 <div class="field">
 
-<label>
-Descuento 10 horas
-</label>
+<label>Descuento 10 horas</label>
 
 <input
 type="number"
@@ -547,40 +549,23 @@ id="infoTurno">
 
 <div class="card">
 
-<h2>
-💰 Datos tomados de Caja
-</h2>
+<h2>💰 Datos tomados de Caja</h2>
 
 
-<table class="caja-resumen">
+<div class="tabla-contenedor">
+
+<table>
 
 <thead>
 
 <tr>
 
-<th>
-Concepto
-</th>
-
-<th>
-V1
-</th>
-
-<th>
-V2
-</th>
-
-<th>
-V3
-</th>
-
-<th>
-V4
-</th>
-
-<th>
-TOTAL
-</th>
+<th>Concepto</th>
+<th>V1</th>
+<th>V2</th>
+<th>V3</th>
+<th>V4</th>
+<th>TOTAL</th>
 
 </tr>
 
@@ -589,28 +574,14 @@ TOTAL
 
 <tbody>
 
-
 <tr>
 
-<td>
-💰 Depósito
-</td>
+<td>💰 Depósito</td>
 
-<td id="v1Dep">
-$0
-</td>
-
-<td id="v2Dep">
-$0
-</td>
-
-<td id="v3Dep">
-$0
-</td>
-
-<td id="v4Dep">
-$0
-</td>
+<td id="v1Dep">$0</td>
+<td id="v2Dep">$0</td>
+<td id="v3Dep">$0</td>
+<td id="v4Dep">$0</td>
 
 <td
 id="totalDep"
@@ -623,25 +594,12 @@ $0
 
 <tr>
 
-<td>
-💸 Retiro
-</td>
+<td>💸 Retiro</td>
 
-<td id="v1Ret">
-$0
-</td>
-
-<td id="v2Ret">
-$0
-</td>
-
-<td id="v3Ret">
-$0
-</td>
-
-<td id="v4Ret">
-$0
-</td>
+<td id="v1Ret">$0</td>
+<td id="v2Ret">$0</td>
+<td id="v3Ret">$0</td>
+<td id="v4Ret">$0</td>
 
 <td
 id="totalRet"
@@ -654,25 +612,12 @@ $0
 
 <tr>
 
-<td>
-🎁 Fichas regaladas
-</td>
+<td>🎁 Fichas regaladas</td>
 
-<td id="v1Fichas">
-$0
-</td>
-
-<td id="v2Fichas">
-$0
-</td>
-
-<td id="v3Fichas">
-$0
-</td>
-
-<td id="v4Fichas">
-$0
-</td>
+<td id="v1Fichas">$0</td>
+<td id="v2Fichas">$0</td>
+<td id="v3Fichas">$0</td>
+<td id="v4Fichas">$0</td>
 
 <td
 id="totalFichas"
@@ -685,25 +630,12 @@ $0
 
 <tr>
 
-<td>
-🛡️ Respaldo
-</td>
+<td>🛡️ Respaldo</td>
 
-<td id="v1Respaldo">
-$0
-</td>
-
-<td id="v2Respaldo">
-$0
-</td>
-
-<td id="v3Respaldo">
-$0
-</td>
-
-<td id="v4Respaldo">
-$0
-</td>
+<td id="v1Respaldo">$0</td>
+<td id="v2Respaldo">$0</td>
+<td id="v3Respaldo">$0</td>
+<td id="v4Respaldo">$0</td>
 
 <td
 id="totalRespaldo"
@@ -716,25 +648,30 @@ $0
 
 <tr>
 
-<td>
-📈 Venta neta
-</td>
+<td>💸 Gastos</td>
 
-<td id="v1Venta">
+<td id="v1Gastos">$0</td>
+<td id="v2Gastos">$0</td>
+<td id="v3Gastos">$0</td>
+<td id="v4Gastos">$0</td>
+
+<td
+id="totalGastos"
+class="total-row">
 $0
 </td>
 
-<td id="v2Venta">
-$0
-</td>
+</tr>
 
-<td id="v3Venta">
-$0
-</td>
 
-<td id="v4Venta">
-$0
-</td>
+<tr>
+
+<td>📈 Venta neta</td>
+
+<td id="v1Venta">$0</td>
+<td id="v2Venta">$0</td>
+<td id="v3Venta">$0</td>
+<td id="v4Venta">$0</td>
 
 <td
 id="totalVenta"
@@ -744,16 +681,16 @@ $0
 
 </tr>
 
-
 </tbody>
 
 </table>
 
+</div>
 
-<div
-class="warning">
 
-<b>Reglas:</b>
+<div class="warning">
+
+<b>Reglas del cierre:</b>
 
 <br><br>
 
@@ -765,15 +702,228 @@ class="warning">
 
 <br>
 
-🎁 Fichas regaladas → se descuentan de las ventas.
+🎁 Fichas regaladas → se descuentan.
 
 <br>
 
-🛡️ Respaldo → se descuenta del saldo.
+🛡️ Respaldo → se descuenta.
+
+<br>
+
+💸 Gastos → se descuentan.
 
 <br>
 
 ➖ 0,6% → se calcula sobre el total de depósitos.
+
+<br>
+
+🕖 Descuento 10 horas → solamente turno 07:00 a 15:00.
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     BILLETERAS
+========================= -->
+
+<div class="card">
+
+<h2>💳 Distribución por billetera</h2>
+
+<div class="tabla-contenedor">
+
+<table class="billetera-table">
+
+<thead>
+
+<tr>
+
+<th>Billetera</th>
+
+<th>Depósitos</th>
+
+<th>Retiros</th>
+
+<th>Gastos</th>
+
+<th>Respaldo</th>
+
+<th>Saldo</th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+<tr>
+
+<td id="nombreB1">
+Naranja X
+</td>
+
+<td id="b1Dep">
+$0
+</td>
+
+<td id="b1Ret">
+$0
+</td>
+
+<td id="b1Gastos">
+$0
+</td>
+
+<td id="b1Respaldo">
+$0
+</td>
+
+<td id="b1Saldo">
+$0
+</td>
+
+</tr>
+
+
+<tr>
+
+<td id="nombreB2">
+MP Caro
+</td>
+
+<td id="b2Dep">
+$0
+</td>
+
+<td id="b2Ret">
+$0
+</td>
+
+<td id="b2Gastos">
+$0
+</td>
+
+<td id="b2Respaldo">
+$0
+</td>
+
+<td id="b2Saldo">
+$0
+</td>
+
+</tr>
+
+
+<tr>
+
+<td id="nombreB3">
+MP Gonza
+</td>
+
+<td id="b3Dep">
+$0
+</td>
+
+<td id="b3Ret">
+$0
+</td>
+
+<td id="b3Gastos">
+$0
+</td>
+
+<td id="b3Respaldo">
+$0
+</td>
+
+<td id="b3Saldo">
+$0
+</td>
+
+</tr>
+
+
+<tr>
+
+<td id="nombreB4">
+NX
+</td>
+
+<td id="b4Dep">
+$0
+</td>
+
+<td id="b4Ret">
+$0
+</td>
+
+<td id="b4Gastos">
+$0
+</td>
+
+<td id="b4Respaldo">
+$0
+</td>
+
+<td id="b4Saldo">
+$0
+</td>
+
+</tr>
+
+
+<tr class="billetera-especial">
+
+<td>
+
+<span id="nombreB5">
+Universal
+</span>
+
+<br>
+
+<small>
+0,6% + 10 horas
+</small>
+
+</td>
+
+<td id="b5Dep">
+$0
+</td>
+
+<td id="b5Ret">
+$0
+</td>
+
+<td id="b5Gastos">
+$0
+</td>
+
+<td id="b5Respaldo">
+$0
+</td>
+
+<td id="b5Saldo">
+$0
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<div class="info">
+
+💡 La billetera <b>Universal</b> corresponde a la billetera especial para los descuentos de <b>0,6%</b> y <b>10 horas</b>.
 
 </div>
 
@@ -786,9 +936,7 @@ class="warning">
 
 <div class="card">
 
-<h2>
-➖ Descuentos automáticos
-</h2>
+<h2>➖ Descuentos</h2>
 
 <div class="summary">
 
@@ -844,6 +992,19 @@ $0
 
 </div>
 
+
+<div class="summary-box">
+
+<span>
+Gastos
+</span>
+
+<strong id="resultadoGastos">
+$0
+</strong>
+
+</div>
+
 </div>
 
 </div>
@@ -855,9 +1016,7 @@ $0
 
 <div class="card">
 
-<h2>
-📊 Resumen del cierre
-</h2>
+<h2>📊 Resumen del cierre</h2>
 
 
 <div class="summary">
@@ -865,120 +1024,92 @@ $0
 
 <div class="summary-box">
 
-<span>
-Total depósitos
-</span>
+<span>Total depósitos</span>
 
-<strong id="rDepositos">
-$0
-</strong>
+<strong id="rDepositos">$0</strong>
 
 </div>
 
 
 <div class="summary-box">
 
-<span>
-Total retiros
-</span>
+<span>Total retiros</span>
 
-<strong id="rRetiros">
-$0
-</strong>
+<strong id="rRetiros">$0</strong>
 
 </div>
 
 
 <div class="summary-box">
 
-<span>
-Ventas netas
-</span>
+<span>Ventas netas</span>
 
-<strong id="rVentas">
-$0
-</strong>
+<strong id="rVentas">$0</strong>
 
 </div>
 
 
 <div class="summary-box">
 
-<span>
-Saldo inicial
-</span>
+<span>Saldo inicial</span>
 
-<strong id="rSaldoInicial">
-$0
-</strong>
+<strong id="rSaldoInicial">$0</strong>
 
 </div>
 
 
 <div class="summary-box">
 
-<span>
-Billetera cierre
-</span>
+<span>Dinero real cierre</span>
 
-<strong id="rBilletera">
-$0
-</strong>
+<strong id="rBilletera">$0</strong>
 
 </div>
 
 
 <div class="summary-box">
 
-<span>
-0,6%
-</span>
+<span>0,6%</span>
 
-<strong id="r06">
-$0
-</strong>
+<strong id="r06">$0</strong>
 
 </div>
 
 
 <div class="summary-box">
 
-<span>
-10 horas
-</span>
+<span>10 horas</span>
 
-<strong id="r10">
-$0
-</strong>
+<strong id="r10">$0</strong>
 
 </div>
 
 
 <div class="summary-box">
 
-<span>
-Fichas
-</span>
+<span>Fichas</span>
 
-<strong id="rFichas">
-$0
-</strong>
+<strong id="rFichas">$0</strong>
 
 </div>
 
 
 <div class="summary-box">
 
-<span>
-Respaldo
-</span>
+<span>Respaldo</span>
 
-<strong id="rRespaldo">
-$0
-</strong>
+<strong id="rRespaldo">$0</strong>
 
 </div>
 
+
+<div class="summary-box">
+
+<span>Gastos</span>
+
+<strong id="rGastos">$0</strong>
+
+</div>
 
 </div>
 
@@ -1061,41 +1192,60 @@ onclick="limpiarCierre()">
 
 <script>
 
+
 /* =================================================
-   CAJA
+   BILLETERAS
 ================================================= */
 
-let cajaDefault = {
+const billeterasDefault = [
 
-    V1:{
-        deposito:0,
-        retiro:0,
-        fichas:0,
-        respaldo:0
-    },
+    "Naranja X",
+    "MP Caro",
+    "MP Gonza",
+    "NX",
+    "Universal"
 
-    V2:{
-        deposito:0,
-        retiro:0,
-        fichas:0,
-        respaldo:0
-    },
+];
 
-    V3:{
-        deposito:0,
-        retiro:0,
-        fichas:0,
-        respaldo:0
-    },
 
-    V4:{
-        deposito:0,
-        retiro:0,
-        fichas:0,
-        respaldo:0
+function obtenerBilleteras(){
+
+    const guardadas =
+        localStorage.getItem(
+            "billeterasControl"
+        );
+
+    if(!guardadas){
+
+        return billeterasDefault;
+
     }
 
-};
+    try{
+
+        const datos =
+            JSON.parse(guardadas);
+
+        if(
+            Array.isArray(datos) &&
+            datos.length === 5
+        ){
+
+            return datos;
+
+        }
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+    return billeterasDefault;
+
+}
 
 
 /* =================================================
@@ -1133,8 +1283,7 @@ function dinero(valor){
 
 function fechaHoy(){
 
-    const hoy =
-        new Date();
+    const hoy = new Date();
 
     const yyyy =
         hoy.getFullYear();
@@ -1159,7 +1308,35 @@ function fechaHoy(){
 
 
 /* =================================================
-   CARGAR CAJA
+   CARGAR NOMBRES
+================================================= */
+
+function cargarNombresBilleteras(){
+
+    const nombres =
+        obtenerBilleteras();
+
+    for(let i=0;i<5;i++){
+
+        const elemento =
+            document.getElementById(
+                "nombreB" + (i+1)
+            );
+
+        if(elemento){
+
+            elemento.innerText =
+                nombres[i];
+
+        }
+
+    }
+
+}
+
+
+/* =================================================
+   OBTENER CAJA
 ================================================= */
 
 function obtenerCaja(){
@@ -1169,21 +1346,15 @@ function obtenerCaja(){
             "cajaControl"
         );
 
-
     if(!datos){
 
-        return cajaDefault;
+        return {};
 
     }
 
-
     try{
 
-        const caja =
-            JSON.parse(datos);
-
-
-        return caja;
+        return JSON.parse(datos);
 
     }
 
@@ -1191,7 +1362,7 @@ function obtenerCaja(){
 
         console.error(error);
 
-        return cajaDefault;
+        return {};
 
     }
 
@@ -1199,7 +1370,7 @@ function obtenerCaja(){
 
 
 /* =================================================
-   MOSTRAR CAJA
+   DATOS DE CAJA
 ================================================= */
 
 function cargarDatosCaja(){
@@ -1212,7 +1383,48 @@ function cargarDatosCaja(){
     let totalRetiros = 0;
     let totalFichas = 0;
     let totalRespaldo = 0;
+    let totalGastos = 0;
     let totalVentas = 0;
+
+
+    const billeteras = [
+
+        {
+            deposito:0,
+            retiro:0,
+            gastos:0,
+            respaldo:0
+        },
+
+        {
+            deposito:0,
+            retiro:0,
+            gastos:0,
+            respaldo:0
+        },
+
+        {
+            deposito:0,
+            retiro:0,
+            gastos:0,
+            respaldo:0
+        },
+
+        {
+            deposito:0,
+            retiro:0,
+            gastos:0,
+            respaldo:0
+        },
+
+        {
+            deposito:0,
+            retiro:0,
+            gastos:0,
+            respaldo:0
+        }
+
+    ];
 
 
     ["V1","V2","V3","V4"].forEach(
@@ -1225,52 +1437,90 @@ function cargarDatosCaja(){
                     deposito:0,
                     retiro:0,
                     fichas:0,
-                    respaldo:0
+                    respaldo:0,
+                    gastos:0,
+                    billetera:0
                 };
 
 
-            const ventaNeta =
-                Number(datos.deposito || 0) +
-                Number(datos.fichas || 0) -
-                Number(datos.retiro || 0) -
-                Number(datos.respaldo || 0);
+            const deposito =
+                Number(
+                    datos.deposito || 0
+                );
+
+
+            const retiro =
+                Number(
+                    datos.retiro || 0
+                );
+
+
+            const fichas =
+                Number(
+                    datos.fichas || 0
+                );
+
+
+            const respaldo =
+                Number(
+                    datos.respaldo || 0
+                );
+
+
+            const gastos =
+                Number(
+                    datos.gastos || 0
+                );
 
 
             /*
-               MOSTRAR DATOS
+               VENTA NETA
+            */
+
+            const ventaNeta =
+                deposito +
+                fichas -
+                retiro -
+                respaldo -
+                gastos;
+
+
+            /*
+               MOSTRAR VENTA
             */
 
             document.getElementById(
-                venta.toLowerCase() +
-                "Dep"
+                venta.toLowerCase()+"Dep"
             ).innerText =
-                dinero(datos.deposito);
+                dinero(deposito);
 
 
             document.getElementById(
-                venta.toLowerCase() +
-                "Ret"
+                venta.toLowerCase()+"Ret"
             ).innerText =
-                dinero(datos.retiro);
+                dinero(retiro);
 
 
             document.getElementById(
-                venta.toLowerCase() +
-                "Fichas"
+                venta.toLowerCase()+"Fichas"
             ).innerText =
-                dinero(datos.fichas);
+                dinero(fichas);
 
 
             document.getElementById(
-                venta.toLowerCase() +
-                "Respaldo"
+                venta.toLowerCase()+"Respaldo"
             ).innerText =
-                dinero(datos.respaldo);
+                dinero(respaldo);
 
 
             document.getElementById(
-                venta.toLowerCase() +
-                "Venta"
+                venta.toLowerCase()+"Gastos"
+            ).innerText =
+                dinero(gastos);
+
+
+            document.getElementById(
+                venta.toLowerCase()+"Venta"
             ).innerText =
                 dinero(ventaNeta);
 
@@ -1279,25 +1529,61 @@ function cargarDatosCaja(){
                TOTALES
             */
 
-            totalDepositos +=
-                Number(datos.deposito || 0);
+            totalDepositos += deposito;
+            totalRetiros += retiro;
+            totalFichas += fichas;
+            totalRespaldo += respaldo;
+            totalGastos += gastos;
+            totalVentas += ventaNeta;
 
-            totalRetiros +=
-                Number(datos.retiro || 0);
 
-            totalFichas +=
-                Number(datos.fichas || 0);
+            /*
+               BILLETERA
+               
+               Caja guarda:
+               billetera = 0,1,2,3,4
+            */
 
-            totalRespaldo +=
-                Number(datos.respaldo || 0);
+            let indice =
+                Number(
+                    datos.billetera
+                );
 
-            totalVentas +=
-                ventaNeta;
+
+            if(
+                !Number.isInteger(indice) ||
+                indice < 0 ||
+                indice > 4
+            ){
+
+                indice = 0;
+
+            }
+
+
+            billeteras[indice].deposito +=
+                deposito;
+
+
+            billeteras[indice].retiro +=
+                retiro;
+
+
+            billeteras[indice].gastos +=
+                gastos;
+
+
+            billeteras[indice].respaldo +=
+                respaldo;
 
         }
 
     );
 
+
+    /*
+       TOTALES TABLA
+    */
 
     document.getElementById(
         "totalDep"
@@ -1324,9 +1610,68 @@ function cargarDatosCaja(){
 
 
     document.getElementById(
+        "totalGastos"
+    ).innerText =
+        dinero(totalGastos);
+
+
+    document.getElementById(
         "totalVenta"
     ).innerText =
         dinero(totalVentas);
+
+
+    /*
+       MOSTRAR BILLETERAS
+    */
+
+    billeteras.forEach(
+
+        function(b, i){
+
+            const n =
+                i + 1;
+
+
+            const saldo =
+                b.deposito -
+                b.retiro -
+                b.gastos -
+                b.respaldo;
+
+
+            document.getElementById(
+                "b"+n+"Dep"
+            ).innerText =
+                dinero(b.deposito);
+
+
+            document.getElementById(
+                "b"+n+"Ret"
+            ).innerText =
+                dinero(b.retiro);
+
+
+            document.getElementById(
+                "b"+n+"Gastos"
+            ).innerText =
+                dinero(b.gastos);
+
+
+            document.getElementById(
+                "b"+n+"Respaldo"
+            ).innerText =
+                dinero(b.respaldo);
+
+
+            document.getElementById(
+                "b"+n+"Saldo"
+            ).innerText =
+                dinero(saldo);
+
+        }
+
+    );
 
 
     return {
@@ -1343,8 +1688,14 @@ function cargarDatosCaja(){
         respaldo:
             totalRespaldo,
 
+        gastos:
+            totalGastos,
+
         ventas:
-            totalVentas
+            totalVentas,
+
+        billeteras:
+            billeteras
 
     };
 
@@ -1433,19 +1784,18 @@ function calcularCierre(){
 
 
     /*
-       SOLO TURNO 07-15
+       SOLO 07-15
     */
 
     if(turno !== "07-15"){
 
-        descuento10 =
-            0;
+        descuento10 = 0;
 
     }
 
 
     /*
-       0,6% SOBRE DEPÓSITOS
+       0,6%
     */
 
     const descuento06 =
@@ -1454,15 +1804,7 @@ function calcularCierre(){
 
 
     /*
-       RESULTADO TEÓRICO
-       
-       Saldo inicial
-       + depósitos
-       - retiros
-       - fichas
-       - respaldo
-       - 0,6%
-       - 10 horas
+       SALDO TEÓRICO
     */
 
     const saldoTeorico =
@@ -1471,6 +1813,7 @@ function calcularCierre(){
         datos.retiros -
         datos.fichas -
         datos.respaldo -
+        datos.gastos -
         descuento06 -
         descuento10;
 
@@ -1485,7 +1828,7 @@ function calcularCierre(){
 
 
     /*
-       MOSTRAR DESCUENTOS
+       DESCUENTOS
     */
 
     document.getElementById(
@@ -1510,6 +1853,12 @@ function calcularCierre(){
         "resultadoRespaldo"
     ).innerText =
         dinero(datos.respaldo);
+
+
+    document.getElementById(
+        "resultadoGastos"
+    ).innerText =
+        dinero(datos.gastos);
 
 
     /*
@@ -1568,6 +1917,12 @@ function calcularCierre(){
         "rRespaldo"
     ).innerText =
         dinero(datos.respaldo);
+
+
+    document.getElementById(
+        "rGastos"
+    ).innerText =
+        dinero(datos.gastos);
 
 
     /*
@@ -1740,8 +2095,14 @@ function guardarCierre(){
         respaldo:
             datos.datosCaja.respaldo,
 
+        gastos:
+            datos.datosCaja.gastos,
+
         ventas:
             datos.datosCaja.ventas,
+
+        billeteras:
+            datos.datosCaja.billeteras,
 
         descuento06:
             datos.descuento06,
@@ -1760,10 +2121,6 @@ function guardarCierre(){
 
     };
 
-
-    /*
-       HISTORIAL LOCAL
-    */
 
     let historial = [];
 
@@ -1830,20 +2187,17 @@ function limpiarCierre(){
 
     document.getElementById(
         "saldoInicial"
-    ).value =
-        "";
+    ).value = "";
 
 
     document.getElementById(
         "billetera"
-    ).value =
-        "";
+    ).value = "";
 
 
     document.getElementById(
         "descuento10"
-    ).value =
-        "";
+    ).value = "";
 
 
     calcularCierre();
@@ -1898,7 +2252,7 @@ function mostrarMensaje(
 
 
 /* =================================================
-   VOLVER AL MENÚ
+   VOLVER
 ================================================= */
 
 function volverMenu(){
@@ -1920,7 +2274,7 @@ document.getElementById(
 
 
 /*
-   RECUPERAR CAJERO
+   CAJERO
 */
 
 const cajeroGuardado =
@@ -1940,7 +2294,7 @@ if(cajeroGuardado){
 
 
 /*
-   RECUPERAR TURNO
+   TURNO
 */
 
 const turnoGuardado =
@@ -1958,6 +2312,8 @@ if(turnoGuardado){
 
 }
 
+
+cargarNombresBilleteras();
 
 cambiarTurno();
 
